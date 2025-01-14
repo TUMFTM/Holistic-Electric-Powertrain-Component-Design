@@ -1,0 +1,145 @@
+component ModuleType1
+    % ModuleType1:2
+    % Module Block
+    %    Model resolution: Lumped
+    %    Number of parallel assemblies: 10
+    %    Number of cells per parallel assembly: 3
+    %
+    %    MATLAB version: 9.14
+    %    Simscape Battery version: 1.1
+    %    Simscape code generated on: 19-Dec-2024 14:18:18
+
+    parameters
+        SOC_vecCell = {[0, .1, .25, .5, .75, .9, 1],'1'}; % Vector of state-of-charge values, SOC
+        T_vecCell = {[278, 293, 313],'K'}; % Vector of temperatures, T
+        V0_matCell = {[3.49, 3.5, 3.51; 3.55, 3.57, 3.56; 3.62, 3.63, 3.64; 3.71, 3.71, 3.72; 3.91, 3.93, 3.94; 4.07, 4.08, 4.08; 4.19, 4.19, 4.19],'V'}; % Open-circuit voltage, V0(SOC,T)
+        V_rangeCell = {[0, inf],'V'}; % Terminal voltage operating range [Min Max]
+        R0_matCell = {[.0117, .0085, .009; .011, .0085, .009; .0114, .0087, .0092; .0107, .0082, .0088; .0107, .0083, .0091; .0113, .0085, .0089; .0116, .0085, .0089],'Ohm'}; % Terminal resistance, R0(SOC,T)
+        AHCell = {27,'A*hr'}; % Cell capacity, AH
+        extrapolation_optionCell = {simscape.enum.extrapolation.nearest,'1'}; % Extrapolation method for all tables
+        R1_matCell = {[.0109, .0029, .0013; .0069, .0024, .0012; .0047, .0026, .0013; .0034, .0016, .001; .0033, .0023, .0014; .0033, .0018, .0011; .0028, .0017, .0011],'Ohm'}; % First polarization resistance, R1(SOC,T)
+        tau1_matCell = {[20, 36, 39; 31, 45, 39; 109, 105, 61; 36, 29, 26; 59, 77, 67; 40, 33, 29; 25, 39, 33],'s'}; % First time constant, tau1(SOC,T)
+        R2_matCell = {[.0109, .0029, .0013; .0069, .0024, .0012; .0047, .0026, .0013; .0034, .0016, .001; .0033, .0023, .0014; .0033, .0018, .0011; .0028, .0017, .0011],'Ohm'}; % Second polarization resistance, R2(SOC,T)
+        tau2_matCell = {[20, 36, 39; 31, 45, 39; 109, 105, 61; 36, 29, 26; 59, 77, 67; 40, 33, 29; 25, 39, 33],'s'}; % Second time constant, tau2(SOC,T)
+        thermal_massCell = {100,'J/K'}; % Thermal mass
+        CellBalancingClosedResistance = {0.01,'Ohm'}; % Cell balancing switch closed resistance
+        CellBalancingOpenConductance = {1e-8,'1/Ohm'}; % Cell balancing switch open conductance
+        CellBalancingThreshold = {0.5,'1'}; % Cell balancing switch operation threshold
+        CellBalancingResistance = {50,'Ohm'}; % Cell balancing shunt resistance
+        CoolantResistance = {1.2,'K/W'}; % Cell level coolant thermal path resistance
+        AmbientResistance = {25,'K/W'}; % Cell level ambient thermal path resistance
+    end
+
+    parameters(ExternalAccess=none)
+        P = 3; % Batteries in Parallel
+        S = 10; % Batteries in Series
+    end
+
+    inputs
+        enableCellBalancing = {repmat(0,S,1),'1'}; % CB
+    end
+
+    nodes
+        p = foundation.electrical.electrical; % +
+        n = foundation.electrical.electrical; % -
+        ClntH = foundation.thermal.thermal; % CH
+        AmbH = foundation.thermal.thermal; % AH
+    end
+
+    variables
+        iCell = {0,'A'}; % Cell current (positive in)
+        vCell = {0,'V'}; % Cell terminal voltage
+        socCell = {value={1,'1'},priority=priority.high}; % Cell state of charge
+        numCyclesCell = {value={0,'1'},priority=priority.high}; % Cell discharge cycles
+        temperatureCell = {value={298.15,'K'},priority=priority.high}; % Cell temperature
+        vParallelAssembly = {value={repmat(0,10,1),'V'},priority=priority.none}; % Parallel Assembly Voltage
+        socParallelAssembly = {value={repmat(1,10,1),'1'},priority=priority.none}; % Parallel Assembly state of charge
+    end
+
+    intermediates
+        power_dissipated = Cell1.power_dissipated*((S*P)-1); % Power dissipated by (S*P)-1 cells
+    end
+
+    equations
+        assert(length(iCell) == 1);
+        assert(length(vCell) == 1);
+        assert(length(socCell) == 1);
+        assert(length(numCyclesCell) == 1);
+        assert(length(temperatureCell) == 1);
+        assert(length(vParallelAssembly) == S);
+        assert(length(socParallelAssembly) == S);
+        vParallelAssembly(1) == vCell;
+        socParallelAssembly(1) == Cell1.stateOfCharge;
+        Cell1.i == iCell;
+        Cell1.v == vCell;
+        Cell1.stateOfCharge == socCell;
+        Cell1.num_cycles == numCyclesCell;
+        Cell1.cell_temperature == temperatureCell;
+    end
+
+    components(ExternalAccess=observe)
+        Cell1 = batteryecm.table_battery(SOC_vec = SOC_vecCell,...
+            T_vec = T_vecCell,V0_mat = V0_matCell,V_range = V_rangeCell,R0_mat = R0_matCell,...
+            AH = AHCell,extrapolation_option = extrapolation_optionCell,R1_mat = R1_matCell,...
+            tau1_mat = tau1_matCell,R2_mat = R2_matCell,tau2_mat = tau2_matCell,...
+            thermal_mass = thermal_massCell,...
+            T_dependence = simscape.enum.tablebattery.temperature_dependence.yes,...
+            prm_age_OCV = simscape.enum.tablebattery.prm_age_OCV.OCV,prm_age_capacity = simscape.enum.tablebattery.prm_age.disabled,...
+            prm_age_modeling = simscape.enum.tablebattery.prm_age_modeling.equation,...
+            prm_age_resistance = simscape.enum.tablebattery.prm_age.disabled,...
+            prm_dir = simscape.enum.tablebattery.prm_dir.noCurrentDirectionality,...
+            prm_dyn = simscape.enum.tablebattery.prm_dyn.rc2,...
+            prm_fade = simscape.enum.tablebattery.prm_fade.disabled,...
+            prm_leak = simscape.enum.tablebattery.prm_leak.disabled,thermal_port = simscape.enum.thermaleffects.model,...
+            i.priority = priority.none,v.priority = priority.none,...
+            stateOfCharge.priority = priority.none,num_cycles.priority = priority.none,...
+            cell_temperature.priority = priority.none);
+        balancingSwitch = foundation.electrical.elements.controlled_switch(R_closed = CellBalancingClosedResistance*S,...
+            G_open = CellBalancingOpenConductance,Threshold = CellBalancingThreshold);
+        balancingResistor = foundation.electrical.elements.resistor(R = CellBalancingResistance*S);
+        CoolantResistor = foundation.thermal.elements.resistance(resistance = CoolantResistance/(S*P));
+        AmbientResistor = foundation.thermal.elements.resistance(resistance = AmbientResistance/(S*P));
+    end
+
+    components(Access=private)
+        PositiveAdapter = GD_Batterymodel_NSGAII_1LumpingAdapters.ElectricalLumpingAdapter(...
+            CellsInParallel = P,CellsInSeries = S);
+        NegativeAdapter = GD_Batterymodel_NSGAII_1LumpingAdapters.ElectricalLumpingAdapter(...
+            CellsInParallel = P,CellsInSeries = S);
+        ThermalAdapter = GD_Batterymodel_NSGAII_1LumpingAdapters.ThermalLumpingAdapter(...
+            CellsInParallel = S*P);
+    end
+
+    connections
+        connect(n,NegativeAdapter.LumpedNode);
+        connect(NegativeAdapter.CellNode,Cell1.n);
+        connect(p,PositiveAdapter.LumpedNode);
+        connect(PositiveAdapter.CellNode,Cell1.p);
+        connect(Cell1.H,ThermalAdapter.CellNode);
+        connect(PositiveAdapter.LumpedNode,balancingSwitch.p);
+        connect(balancingSwitch.n,balancingResistor.p);
+        connect(balancingResistor.n,NegativeAdapter.LumpedNode);
+        connect(enableCellBalancing(1),balancingSwitch.vT);
+        connect(ThermalAdapter.LumpedNode,CoolantResistor.A);
+        connect(CoolantResistor.B,ClntH);
+        connect(ThermalAdapter.LumpedNode,AmbientResistor.A);
+        connect(AmbientResistor.B,AmbH);
+    end
+
+    annotations
+        [p] : Side=top;
+        [n] : Side=bottom;
+        UILayout = [UIGroup("Main",SOC_vecCell,T_vecCell,V0_matCell,V_rangeCell,R0_matCell,AHCell,extrapolation_optionCell),...
+            UIGroup("Dynamics",R1_matCell,tau1_matCell,R2_matCell,tau2_matCell),...
+            UIGroup("Thermal",thermal_massCell,CoolantResistance,AmbientResistance),...
+            UIGroup("Cell Balancing",CellBalancingClosedResistance,CellBalancingOpenConductance,CellBalancingThreshold,CellBalancingResistance)];
+        Icon = 'module.svg';
+    end
+
+    for CellIdx = 2:S
+        equations
+            vParallelAssembly(1) == vParallelAssembly(CellIdx);
+            socParallelAssembly(1) == socParallelAssembly(CellIdx);
+        end
+    end
+end

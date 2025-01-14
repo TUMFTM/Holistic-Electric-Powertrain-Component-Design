@@ -1,0 +1,35 @@
+{
+
+"SysSpec.BMS_state": 0,				% Passive cell balancing: 0 = off / 1 = on - NOT IMPLEMENTED YET
+"SysSpec.BMS_simulation": 0,			% Simulation off a quick charge cycle: 0 = off / 1 = on
+
+
+% Simscape Battery
+"SysSpec.simulation_simscape": 0,			% Simulation using Simscape Battery : 0 = off / 1 = on
+"SysSpec.simulation_cell_grouping": "detailed"	% Depth of simulation: lumped, grouped, detailed
+"SysSpec.simulation_charge_dynamics": "rc2"	% Charge Dynamics representation: off , rc1, rc2, rc3, rc4, rc5
+"simulation_SOC_start": 1,				% SOC at the start of the simulation [0 1] {1 = 100%]  
+"simulation_SOC_deviation": 0,			% Start simulation with different SOCs at module level : 0 = off, >0 = Deviation in [%]
+								  {Not aviable for SOC = 1 or 0}
+
+% Reiter
+"SysSpec.simulation_reiter": 1,			% Simulation using Reiter: 0 = off / 1 = on
+"SysSpec.simulation_parameter_deviation": 0	% Derivate Paramaters of Cells; Has to be off for cell grouping : 0 = off / 1 = on
+
+"SysSpec.cellname": "Cyl_18650" 		%Name the the used cells
+
+SysSpec.num_higher_p_mod = 0;    	% Not only look for one parallel cell connection for each module, but also consider up t0 p+n --> More e*pe-distributions will be found.
+SysSpec.num_higher_p_sys = 0;   	% Not only look for one parallel module connection for each system, but also consider up t0 p+n --> More e*pe-distributions will be found. Note that this will potentially massively overdimension your system!
+
+SysSpec.I_sys_max   = 850;		% Maximum continuous current the system must withstand in A
+SysSpec.U_sys_nom   = 400;		% Nominal voltage of battery system
+SysSpec.C_sys_min   = 190;		% Minimum system capacity in Ah
+SysSpec.E_sys_min   = 80;		% Minimum system energy in kWh
+
+SysSpec.m_sys_max       = 1500;		% Maximum module mass in kg
+
+SysSpec.dim_x_sys_max   = 3.0/9;	% Maximum system dimension in x-direction in m
+SysSpec.dim_y_sys_max   = 1.7;		% Maximum system dimension in y-direction in m
+SysSpec.dim_z_sys_max   = 0.2;		% Maximum system dimension in z-direction in m
+
+}

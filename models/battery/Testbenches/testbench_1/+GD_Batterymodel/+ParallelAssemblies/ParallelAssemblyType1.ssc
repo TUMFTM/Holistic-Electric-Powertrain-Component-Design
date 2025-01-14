@@ -1,0 +1,80 @@
+component ParallelAssemblyType1
+    % ParallelAssemblyType1:2
+    % Parallel Assembly Block
+    %    Model resolution: Lumped
+    %    Number of cells: 3
+    %
+    %    MATLAB version: 9.13
+    %    Simscape Battery version: 1.0
+    %    Simscape code generated on: 28-Feb-2023 15:46:20
+
+    parameters
+        SOC_vec = {[0, .1, .25, .5, .75, .9, 1],'1'}; % Vector of state-of-charge values, SOC
+        V0_vec = {[3.5057, 3.566, 3.6337, 3.7127, 3.9259, 4.0777, 4.1928],'V'}; % Open-circuit voltage, V0(SOC)
+        V_range = {[0, inf],'V'}; % Terminal voltage operating range [Min Max]
+        R0_vec = {[.0085, .0085, .0087, .0082, .0083, .0085, .0085],'Ohm'}; % Terminal resistance, R0(SOC)
+        AH = {27,'A*hr'}; % Cell capacity, AH
+        extrapolation_option = {simscape.enum.extrapolation.nearest,'1'}; % Extrapolation method for all tables
+    end
+
+    parameters(ExternalAccess=none)
+        P = 3; % Batteries in Parallel
+    end
+
+    nodes
+        p = foundation.electrical.electrical; % +
+        n = foundation.electrical.electrical; % -
+    end
+
+    variables
+        iCellModel = {0,'A'}; % Cell model current (positive in)
+        vCellModel = {0,'V'}; % Cell model terminal voltage
+        socCellModel = {value={1,'1'},priority=priority.high}; % Cell model state of charge
+        numCyclesCellModel = {value={0,'1'},priority=priority.high}; % Cell model discharge cycles
+        vParallelAssembly = {value={0,'V'},priority=priority.none}; % Parallel Assembly Voltage
+        socParallelAssembly = {value={1,'1'},priority=priority.none}; % Parallel Assembly state of charge
+    end
+
+    equations
+        assert(length(iCellModel) == 1);
+        assert(length(vCellModel) == 1);
+        assert(length(socCellModel) == 1);
+        assert(length(numCyclesCellModel) == 1);
+        assert(length(vParallelAssembly) == 1);
+        assert(length(socParallelAssembly) == 1);
+        vParallelAssembly == ParallelAssembly1.v;
+        socParallelAssembly == ParallelAssembly1.stateOfCharge;
+        ParallelAssembly1.i == iCellModel;
+        ParallelAssembly1.v == vCellModel;
+        ParallelAssembly1.stateOfCharge == socCellModel;
+        ParallelAssembly1.num_cycles == numCyclesCellModel;
+    end
+
+    components(ExternalAccess=observe)
+        ParallelAssembly1 = batteryecm.table_battery(SOC_vec = SOC_vec,...
+            V0_vec = V0_vec,V_range = V_range,R0_vec = R0_vec*1/P,AH = AH*P,...
+            extrapolation_option = extrapolation_option,...
+            T_dependence = simscape.enum.tablebattery.temperature_dependence.no,thermal_port = simscape.enum.thermaleffects.omit,...
+            prm_age_OCV = simscape.enum.tablebattery.prm_age_OCV.OCV,...
+            prm_age_capacity = simscape.enum.tablebattery.prm_age.disabled,...
+            prm_age_resistance = simscape.enum.tablebattery.prm_age.disabled,...
+            prm_age_modeling = simscape.enum.tablebattery.prm_age_modeling.equation,...
+            prm_dyn = simscape.enum.tablebattery.prm_dyn.off,...
+            prm_dir = simscape.enum.tablebattery.prm_dir.noCurrentDirectionality,...
+            prm_fade = simscape.enum.tablebattery.prm_fade.disabled,prm_leak = simscape.enum.tablebattery.prm_leak.disabled,...
+            i.priority = priority.none,v.priority = priority.none,...
+            stateOfCharge.priority = priority.none,num_cycles.priority = priority.none);
+    end
+
+    connections
+        connect(p,ParallelAssembly1.p);
+        connect(n,ParallelAssembly1.n);
+    end
+
+    annotations
+        [p] : Side=top;
+        [n] : Side=bottom;
+        UILayout = [UIGroup("Main",SOC_vec,V0_vec,V_range,R0_vec,AH,extrapolation_option)];
+        Icon = 'parallelAssembly.svg';
+    end
+end

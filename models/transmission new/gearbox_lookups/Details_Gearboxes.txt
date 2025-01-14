@@ -1,0 +1,33 @@
+ACHTUNG: GAO Modell verwendet unabhängig vom Fahrzeug/Motor immer den Betriebspunkt 200kW und 8000rpm (=239Nm)
+in STplus zur geometrischen Auslegung des Getriebes.
+%% Topologie 1 teilweise überarbeitet: Zusätzliche Dichtelemente entfernt, Lagerdimensionen grob angepasst
+
+TP1_9_03: i1 = 2,613; mn1 = 1,528; nm2 = 2,363; z1 = 31; z2 = 24   %Tesla Model 3 Konfig
+
+TP1_11_53: i1 = 2,957; mn1 = 1,67; nm2 = 2,111; z1 = 23; z2 = 20   %VW ID.3 Konfig
+
+TP1_11_53_eta: i1 = 2,957; mn1 = 1,67; nm2 = 2,111; z1 = 23; z2 = 20 (Kennfeld mit Wirkungsgrad statt Verlustleistung)
+
+TP3_8_40: i1 = 2,4; mn1 = 1,75; mn2 = 2,45; z1 = 24; z2 =  21
+
+TP3_9_03: i1 = 2,613; mn1 = 1,528; nm2 = 2,363; z1 = 31; z2 = 24
+
+TP3_10_25: i1 = 2,65; mn1 = 1,528; mn2 = 2,363; z1 = 26; z2 = 21
+
+TP3_10_90: i1 = 2,80; mn1 = 1,62; mn2 = 2,16; z1 = 26; z2 = 22
+
+TP3_11_53: i1 = 2,957; mn1 = 1,67; nm2 = 2,111; z1 = 23; z2 = 20
+
+TP3_12_00: i1 = 2,80; mn1 = 1,528; nm2 = 2,363; z1 = 27; z2 = 22
+
+TP4_8_40: i1 = 2,4; mn1 = 1,75; mn2 = 2,45; z1 = 24; z2 =  21
+
+TP4_9_03: i1 = 2,613; mn1 = 1,528; nm2 = 2,363; z1 = 31; z2 = 24
+
+TP4_10_25: i1 = 2,65; mn1 = 1,528; mn2 = 2,363; z1 = 26; z2 = 21
+
+TP4_10_90: i1 = 2,80; mn1 = 1,62; mn2 = 2,16; z1 = 26; z2 = 22
+
+TP4_11_53: i1 = 2,957; mn1 = 1,67; nm2 = 2,111; z1 = 23; z2 = 20
+
+TP4_12_00: i1 = 2,80; mn1 = 1,528; nm2 = 2,363; z1 = 27; z2 = 22

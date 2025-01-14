@@ -1,0 +1,226 @@
+# -------------------------------------------------------------------
+$ Anfang
+# -------------------------------------------------------------------
+# TP1: Achsparallele Stirnradpaarung
+# virtuelles Getriebe mit zwei Stufen
+#
+#
+#              R1
+#              +-+
+#           o  | |    o
+#   W1 xxxx----| |------------                Im Folgenden Abtrieb
+#           o  | |    o
+#              +-+        R2
+#           o  | |       +-+   o
+#   W2     ----| |-------| |----
+#           o  | |       +-+   o
+#              +-+       | |
+#           o  R1        | |   o
+#           -------------| |----xxxx W3       Im Folgenden Antrieb
+#           o            | |   o
+#                        | |
+#                        +-+
+#                         R1
+#
+
+# -------------------------------------------------------------------
+$ ALLGEMEINES
+# -------------------------------------------------------------------
+VERSION_WTPLUS   = 2.4.2
+BENUTZERTEXT     = TP1_einspritz
+VERFAHREN_MUE    = SCHLENK      # Reibungszahl im Zahnkontakt nach
+                                # Schlenk (Standard)
+BERUMFANG_WTPLUS = 1            # Berechnung der Verlustleistung
+                                # (Standard)
+SCHMIERUNGSART   = OELEINSPRITZ # Einspritzschmierung:
+                                # gilt für alle Zahnräder, für die
+                                # keine davon abweichenden Angaben
+                                # im jeweiligen Block gemacht werden
+SCHMIERUNGSART_LAGER = 2  # 1 / FETT:      Fett
+                        # 2 / LUFT:      Oelluft
+                        # 3 / OELBAD:    Oelbad
+                        # 4 / EINSPRITZ: Oeleinspritz
+                        # 5 / SENK:      Oelbad(Senk)
+VERFAHREN_PVD    = DEUTSCH
+
+# -------------------------------------------------------------------
+$ OELDATEN
+# -------------------------------------------------------------------
+TEMP_EINSPRITZ = 80
+SCHMIERSTOFF   = PG5
+
+# -------------------------------------------------------------------
+$ WELLE
+# -------------------------------------------------------------------
+# Abtriebswelle (Welle1)
+IW = 1
+WELLENART  = AB
+
+
+UK = 0     DA = 47
+UK = 5     DA = 47  DICHT = 1
+UK = 30    DA = 47  LAGER = 1
+UK = 150   DA = 47  LAGER = 1
+# UK = 175   DA = 47  DICHT = 1     #Sanftl: Dichtung auskommentiert
+UK = 180   DA = 0
+
+# -------------------------------------------------------------------
+$ WELLE
+# -------------------------------------------------------------------
+# Zwischenwelle (Welle2)
+IW = 2
+
+UK = 0   DA = 62
+# UK = 5   DA = 62    DICHT = 1     #Sanftl: Dichtung auskommentiert
+UK = 30  DA = 62    LAGER = 1
+UK = 215 DA = 62    LAGER = 1
+# UK = 240 DA = 62    DICHT = 1     #Sanftl: Dichtung auskommentiert
+UK = 245 DA = 0
+
+# -------------------------------------------------------------------
+$ WELLE
+# -------------------------------------------------------------------
+# Antriebswelle (Welle3)
+IW = 3
+DREHZAHL   = 633.452510
+WELLENART = AN
+
+UK = 0   DA = 62
+UK = 5   DA = 62    DICHT = 1   
+UK = 30  DA = 62    LAGER = 1
+UK = 180  DA = 62    TUA = -300.855740
+UK = 215  DA = 62    LAGER = 1
+UK = 240  DA = 62    DICHT = 1
+UK = 245  DA = 0
+
+# -------------------------------------------------------------------
+$ STUFENDATEN
+# -------------------------------------------------------------------
+IW       = 1 2
+IR       = 1 1
+MN       = 1.670000 
+S_BAUART = 1                     # Stufenbauart, hier: Stirnradstufe
+ACHSWIN  = 180.  #Sanftl: von 150 auf 180 Grad geändert
+
+# Angaben zur Einspritzschmierung:
+V_EINSPRITZ_OEL      = 0.4    # Einspritzgeschwindigkeit [m/s]
+VOLUMENSTROM_OEL     = 2.5        # eingespritzter Oelvolumenstrom
+                                # in [l/min]
+EINSPRITZRICHTUNG    = UNTEN      # Spritzen in den Eingriff  #Sanftl: Richtung
+                                # OBEN:  von oben
+                                # UNTEN: von unten
+
+# -------------------------------------------------------------------
+$ STUFENDATEN
+# -------------------------------------------------------------------
+IW       = 3 2
+IR       = 1 2
+MN       = 2.111000 
+S_BAUART = 1
+ACHSWIN  = 180.  #Sanftl: von 150 auf 180 Grad geändert
+
+# Angaben zur Einspritzschmierung:
+V_EINSPRITZ_OEL      = 0.4    # Einspritzgeschwindigkeit [m/s]
+VOLUMENSTROM_OEL     = 2.5        # eingespritzter Oelvolumenstrom
+                                # in [l/min]
+EINSPRITZRICHTUNG    = OBEN       # Spritzen in den Eingriff
+                                # OBEN:  von oben
+                                # UNTEN: von unten
+
+# -------------------------------------------------------------------
+$ ZAHNRAD
+# -------------------------------------------------------------------
+IW   = 1
+IR   = 1
+Z    = 23 
+B    = 69 
+BETA = 23.4
+UKA  = 40
+
+# -------------------------------------------------------------------
+$ ZAHNRAD
+# -------------------------------------------------------------------
+IW   = 2
+IR   = 1
+Z    = 68 
+B    = 69 
+BETA = -23.4
+UKA  = 40
+
+# -------------------------------------------------------------------
+$ ZAHNRAD
+# -------------------------------------------------------------------
+IW   = 2
+IR   = 2
+Z    = 20 
+B    = 167 
+BETA = -18.4
+UKA  = 180
+
+# -------------------------------------------------------------------
+$ ZAHNRAD
+# -------------------------------------------------------------------
+IW   = 3
+IR   = 1
+Z    = 78 
+B    = 167 
+BETA = 18.4
+UKA  = 39       #Sanftl: Geändert von 180 auf 39
+
+# -------------------------------------------------------------------
+$ LAGERDATEN
+# -------------------------------------------------------------------
+IW = 1
+IL = 1
+HERSTELLER  = SKF
+FAXAUFNAHME = 2
+LAGERNAME   = 16009   #Sanftl: Lagertyp geändert von 16004 auf 16009
+
+# -------------------------------------------------------------------
+$ LAGERDATEN
+# -------------------------------------------------------------------
+IW = 1
+IL = 2
+HERSTELLER  = SKF
+FAXAUFNAHME = 0
+LAGERNAME   = 16009   #Sanftl: Lagertyp geändert von 16004 auf 16009
+
+# -------------------------------------------------------------------
+$ LAGERDATEN
+# -------------------------------------------------------------------
+IW = 2
+IL = 1
+HERSTELLER  = SKF
+FAXAUFNAHME = 2     #Sanftl: Lager von Loslager (0) zu Festlager (2) geändert
+LAGERNAME   = 16013     #Sanftl: Lagertyp geändert von 16007 auf 160013
+
+# -------------------------------------------------------------------
+$ LAGERDATEN
+# -------------------------------------------------------------------
+IW = 2
+IL = 2
+HERSTELLER  = SKF
+FAXAUFNAHME = 0
+LAGERNAME   = 16013     #Sanftl: Lagertyp geändert von 16007 auf 160013
+
+# -------------------------------------------------------------------
+$ LAGERDATEN
+# -------------------------------------------------------------------
+IW = 3
+IL = 1
+HERSTELLER  = SKF
+FAXAUFNAHME = 0
+LAGERNAME   = 16013     #Sanftl: Lagertyp geändert von 16007 auf 160013
+
+# -------------------------------------------------------------------
+$ LAGERDATEN
+# -------------------------------------------------------------------
+IW = 3
+IL = 2
+HERSTELLER  = SKF
+FAXAUFNAHME = 2
+LAGERNAME   = 16013     #Sanftl: Lagertyp geändert von 16007 auf 160013
+
+# -------------------------------------------------------------------
+$ Ende
+# -------------------------------------------------------------------

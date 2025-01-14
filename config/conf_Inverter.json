@@ -1,0 +1,21 @@
+{
+    "fswitch":5000,
+    "R1igbt":0.005,
+    "C1igbt":0.2,
+    "R2igbt":0.05,
+    "C2igbt":0.6,
+    "R3igbt":0.065,
+    "C3igbt":3.846,
+    "R4igbt":0.02,
+    "C4igbt":75,
+    "R6igbt":0.12,
+    "R1diode":0.015,
+    "C1diode":0.06666,
+    "R2diode":0.1,
+    "C2diode":0.3,
+    "R3diode":0.065,
+    "C3diode":3.846,
+    "R4diode":0.02,
+    "C4diode":75,
+    "Rmosfet":0.42
+}

@@ -1,0 +1,23 @@
+{
+  "maximum_speed": 160,
+  "zero_to_corner_speed_in_s": 7.3,
+  "body_type": "C",
+  "suv_flag": 0,
+  "driving_cycle": "WLTP_class_3",
+  "corner_speed_acc_cycle": 100,
+  "tire_radius": 0.335,
+  "rot_mass_factor": 1.07,
+  "air_density": 1.225,
+  "cw_air": 0.267,
+  "frontal_area": 2.3903615,
+  "tire_roll_resistance": 0.009,
+  "drain_auxiliaries": 280,
+  "gravity_acceleration": 9.81,
+  "road_surface": 100,
+  "ambient_temp": 298.15,
+  "max_acc_rel": 0.8,
+  "vehicle_dim_x_mm": 4315,
+  "vehicle_dim_y_mm": 1805,
+  "vehicle_dim_z_mm": 1558,
+  "mass_total": 1976
+}

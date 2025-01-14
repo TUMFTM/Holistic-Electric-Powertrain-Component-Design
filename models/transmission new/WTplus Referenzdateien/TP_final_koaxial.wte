@@ -1,0 +1,227 @@
+# -------------------------------------------------------------------
+$ Anfang
+# -------------------------------------------------------------------
+# TP2: Koaxiale Stirnradpaarung
+# virtuelles Getriebe mit zwei Stufen
+#
+#
+#             
+#
+#
+#
+#              R2
+#              +-+        R2
+#           o  | |       +-+   o
+#   W2     ----| |-------| |----
+#           o  | |       +-+   o
+#              +-+       | |
+#           o  | | o   o | |   o
+#   W3 xxxx ---| |--  ---| |----xxxx W1       
+#           o  | | o   o | |   o
+#              +-+       | |
+#               R1       +-+
+#                         R1
+#
+
+# -------------------------------------------------------------------
+$ ALLGEMEINES
+# -------------------------------------------------------------------
+VERSION_WTPLUS   = 2.4.2
+BENUTZERTEXT     = TP2_einspritz
+VERFAHREN_MUE    = SCHLENK      # Reibungszahl im Zahnkontakt nach 
+                                # Schlenk (Standard)
+BERUMFANG_WTPLUS = 1            # Berechnung der Verlustleistung 
+                                # (Standard)
+SCHMIERUNGSART   = OELEINSPRITZ # Einspritzschmierung:
+                                # gilt für alle Zahnräder, für die 
+                                # keine davon abweichenden Angaben 
+                                # im jeweiligen Block gemacht werden
+SCHMIERUNGSART_LAGER = 4  # 1 / FETT:      Fett
+                          # 2 / LUFT:      Oelluft
+                          # 3 / OELBAD:    Oelbad
+                          # 4 / EINSPRITZ: Oeleinspritz
+                          # 5 / SENK:      Oelbad(Senk)
+VERFAHREN_PVD    = DEUTSCH						  
+
+# -------------------------------------------------------------------
+$ OELDATEN
+# -------------------------------------------------------------------
+TEMP_EINSPRITZ = 50.7
+SCHMIERSTOFF   = PG5
+
+# -------------------------------------------------------------------
+$ WELLE
+# -------------------------------------------------------------------
+# Abtriebswelle (Welle1)
+IW = 1
+WELLENART  = AB
+ #OELSTAND = -10
+
+UK = 0     DA = 41.21 
+UK = 5     DA = 41.21  DICHT = 1
+UK = 30    DA = 41.21  LAGER = 1
+UK = 72.63    DA = 41.21  LAGER = 1
+UK = 80    DA = 41.21 
+UK = 81   DA = 0
+
+# -------------------------------------------------------------------
+$ WELLE
+# -------------------------------------------------------------------
+# Zwischenwelle (Welle2)
+IW = 2
+
+UK = 0   DA = 45.11
+#UK = 5   DA = 45.11    DICHT = 1
+UK = 30  DA = 45.11    LAGER = 1
+UK = 160.9 DA = 45.11    LAGER = 1
+#UK = 165 DA = 45.11    DICHT = 1
+UK = 166 DA = 0 
+
+# -------------------------------------------------------------------
+$ WELLE
+# -------------------------------------------------------------------
+# Antriebswelle (Welle3)
+IW = 3
+DREHZAHL   = 80
+WELLENART = AN
+
+UK = 0   DA = 48.53
+UK = 5   DA = 48.53   
+UK = 30  DA = 48.53    LAGER = 1
+UK = 180  DA = 48.53    TUA = -100
+UK = 172.27  DA = 48.53    LAGER = 1
+UK = 1  DA = 48.53    DICHT = 1  
+UK = 165  DA = 48.53    DICHT = 1  
+UK = 166  DA = 0
+
+# -------------------------------------------------------------------
+$ STUFENDATEN
+# -------------------------------------------------------------------
+IW       = 1 2
+IR       = 1 1
+MN       = 1.7088 
+S_BAUART = 1                     # Stufenbauart, hier: Stirnradstufe
+ACHSWIN  = 0.
+
+# Angaben zur Einspritzschmierung:
+V_EINSPRITZ_OEL      = 0.4    # Einspritzgeschwindigkeit [m/s]
+VOLUMENSTROM_OEL     = 2.5        # eingespritzter Oelvolumenstrom
+                                  # in [l/min]
+EINSPRITZRICHTUNG    = OBEN       # Spritzen in den Eingriff 
+                                  # OBEN:  von oben
+                                  # UNTEN: von unten
+
+# -------------------------------------------------------------------
+$ STUFENDATEN
+# -------------------------------------------------------------------
+IW       = 3 2
+IR       = 1 2
+MN       = 2.6502
+S_BAUART = 1
+ACHSWIN  = 180.
+
+# Angaben zur Einspritzschmierung:
+V_EINSPRITZ_OEL      = 0.4    # Einspritzgeschwindigkeit [m/s]
+VOLUMENSTROM_OEL     = 2.5        # eingespritzter Oelvolumenstrom
+                                  # in [l/min]
+EINSPRITZRICHTUNG    = OBEN       # Spritzen in den Eingriff 
+                                  # OBEN:  von oben
+                                  # UNTEN: von unten
+
+# -------------------------------------------------------------------
+$ ZAHNRAD
+# -------------------------------------------------------------------
+IW   = 1
+IR   = 1
+Z    = 25 
+B    = 26.63 
+BETA = 23.4      
+UKA  = 38
+
+# -------------------------------------------------------------------
+$ ZAHNRAD
+# -------------------------------------------------------------------
+IW   = 2
+IR   = 1
+Z    = 95 
+B    = 26.63 
+BETA = -23.4           
+UKA  = 126.27
+
+# -------------------------------------------------------------------
+$ ZAHNRAD
+# -------------------------------------------------------------------
+IW   = 2
+IR   = 2
+Z    = 23 
+B    = 59.27 
+BETA = -18.4       
+UKA  = 38
+
+# -------------------------------------------------------------------
+$ ZAHNRAD
+# -------------------------------------------------------------------
+IW   = 3
+IR   = 1
+Z    = 57 
+B    = 59.27 
+BETA = 18.4          
+UKA  = 100
+
+# -------------------------------------------------------------------
+$ LAGERDATEN
+# -------------------------------------------------------------------
+IW = 1
+IL = 1
+HERSTELLER  = SKF
+FAXAUFNAHME = 0
+LAGERNAME   = 16009
+
+# -------------------------------------------------------------------
+$ LAGERDATEN
+# -------------------------------------------------------------------
+IW = 1
+IL = 2
+HERSTELLER  = SKF
+FAXAUFNAHME = 2
+LAGERNAME   = 16009
+
+# -------------------------------------------------------------------
+$ LAGERDATEN
+# -------------------------------------------------------------------
+IW = 2
+IL = 1
+HERSTELLER  = SKF
+FAXAUFNAHME = 2
+LAGERNAME   = 16010
+
+# -------------------------------------------------------------------
+$ LAGERDATEN
+# -------------------------------------------------------------------
+IW = 2
+IL = 2
+HERSTELLER  = SKF
+FAXAUFNAHME = 0
+LAGERNAME   = 16010
+
+# -------------------------------------------------------------------
+$ LAGERDATEN
+# -------------------------------------------------------------------
+IW = 3
+IL = 1
+HERSTELLER  = SKF
+FAXAUFNAHME = 2
+LAGERNAME   = 16010
+
+# -------------------------------------------------------------------
+$ LAGERDATEN
+# -------------------------------------------------------------------
+IW = 3
+IL = 2
+HERSTELLER  = SKF
+FAXAUFNAHME = 0
+LAGERNAME   = 16010
+
+# -------------------------------------------------------------------
+$ Ende
+# -------------------------------------------------------------------

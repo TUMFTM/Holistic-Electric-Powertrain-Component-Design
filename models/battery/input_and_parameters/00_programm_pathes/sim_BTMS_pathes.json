@@ -1,0 +1,15 @@
+{
+
+"save_1":"BTMS_simulation_results/configs_1_mod_all",
+"save_2_passed":"BTMS_simulation_results/configs_2_mod_passed",
+"save_2_failed":"BTMS_simulation_results/configs_2_mod_failed",
+"save_3":"BTMS_simulation_results/configs_3_sys_all",
+"save_4_passed":"BTMS_simulation_results/configs_4_sys_passed",
+"save_4_failed":"BTMS_simulation_results/configs_4_sys_failed",
+"save_5":"BTMS_simulation_results/configs_5_BTMS_all",
+"save_6_passed":"BTMS_simulation_results/configs_6_BTMS_passed",
+"save_6_failed":"BTMS_simulation_results/configs_6_BTMS_failed",
+"Batterymodel":"Batterymodel",
+"Celldata":"input_and_parameters/01_cell_data"
+
+}

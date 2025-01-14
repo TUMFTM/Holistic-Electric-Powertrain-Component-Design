@@ -1,0 +1,95 @@
+component ParallelAssembly1
+    % ParallelAssembly1:2
+    % Parallel Assembly Block
+    %    Model resolution: Detailed
+    %    Number of cells: 1
+    %
+    % Block is parameterized for this Battery:
+    %    Part number: NCR18650BF
+    %    Manufacturer: Panasonic
+    %    Web link: https://industrial.panasonic.com/ww/products/batteries
+    %    Parameterization note: Predefined parameterizations of Simscape components use available data sources for supplying parameter values. Engineering judgement and simplifying assumptions are used to fill in for missing data. As a result, deviations between simulated and actual physical behavior should be expected. To ensure requisite accuracy, you should validate simulated behavior against experimental data and refine component models as necessary.
+    %
+    %    MATLAB version: 9.14
+    %    Simscape Battery version: 1.1
+    %    Simscape code generated on: 23-May-2023 17:09:21
+
+    parameters
+        SOC_vecCell = {[0 0.01 0.02 0.03 0.04 0.05 0.06 0.07 0.08 0.09 0.1 0.11 0.12 0.13 0.14 0.15 0.16 0.17 0.18 0.19 0.2 0.21 0.22 0.23 0.24 0.25 0.26 0.27 0.28 0.29 0.3 0.31 0.32 0.33 0.34 0.35 0.36 0.37 0.38 0.39 0.4 0.41 0.42 0.43 0.44 0.45 0.46 0.47 0.48 0.49 0.5 0.51 0.52 0.53 0.54 0.55 0.56 0.57 0.58 0.59 0.6 0.61 0.62 0.63 0.64 0.65 0.66 0.67 0.68 0.69 0.7 0.71 0.72 0.73 0.74 0.75 0.76 0.77 0.78 0.79 0.8 0.81 0.82 0.83 0.84 0.85 0.86 0.87 0.88 0.89 0.9 0.91 0.92 0.93 0.94 0.95 0.96 0.97 0.98 0.99 1],'1'}; % Vector of state-of-charge values, SOC
+        V0_vecCell = {[2.54959 2.72277 2.8309 2.90338 2.94932 2.99568 3.04282 3.08893 3.13237 3.1748 3.21261 3.24735 3.27811 3.30611 3.33207 3.35348 3.37373 3.39078 3.40552 3.42083 3.43203 3.4417 3.44978 3.45814 3.46654 3.47495 3.48258 3.48961 3.49665 3.5042 3.51255 3.52116 3.52942 3.53684 3.54421 3.55146 3.55892 3.56648 3.57366 3.58054 3.58765 3.59465 3.60064 3.60661 3.61259 3.61852 3.62445 3.63043 3.63671 3.64314 3.64971 3.6568 3.66398 3.67131 3.67896 3.68659 3.69422 3.70211 3.70999 3.71791 3.72583 3.73426 3.74295 3.75164 3.76009 3.76809 3.77609 3.78411 3.79209 3.79975 3.80711 3.81469 3.82306 3.83141 3.83964 3.8465 3.85319 3.85997 3.86692 3.87404 3.88116 3.889 3.89764 3.90628 3.91468 3.92424 3.93459 3.94495 3.9552 3.96544 3.97573 3.98567 3.99568 4.00621 4.01675 4.02606 4.03387 4.0415 4.04823 4.05702 4.18791],'V'}; % Open-circuit voltage, V0(SOC)
+        V_rangeCell = {[2.25 Inf],'V'}; % Terminal voltage operating range [Min Max]
+        R0_vecCell = {[0.14748 0.16286 0.15506 0.13564 0.11292 0.10209 0.09565 0.09242 0.09015 0.08876 0.08936 0.08943 0.08993 0.0901 0.0913 0.09117 0.0919 0.09161 0.09109 0.09139 0.09028 0.08916 0.08754 0.08684 0.08616 0.08548 0.0845 0.08334 0.08219 0.08142 0.08122 0.08111 0.08093 0.08056 0.08016 0.07973 0.07949 0.07936 0.07909 0.07879 0.07858 0.07833 0.07771 0.07707 0.07642 0.07575 0.07508 0.07428 0.07341 0.07268 0.0721 0.07169 0.07133 0.07104 0.07087 0.07055 0.07024 0.07001 0.06918 0.06824 0.06729 0.06688 0.06676 0.06663 0.06644 0.06614 0.06584 0.06556 0.06546 0.06525 0.065 0.06492 0.06518 0.06543 0.06567 0.0654 0.06507 0.06475 0.0645 0.06431 0.06412 0.06422 0.06463 0.06503 0.0651 0.06525 0.06551 0.06577 0.06603 0.06629 0.0665 0.06632 0.06616 0.06636 0.06665 0.06648 0.06536 0.06416 0.06143 0.05804 0.02838],'Ohm'}; % Terminal resistance, R0(SOC)
+        AHCell = {3.008,'hr*A'}; % Cell capacity, AH
+        extrapolation_optionCell = {simscape.enum.extrapolation.nearest,'1'}; % Extrapolation method for all tables
+    end
+
+    parameters(ExternalAccess=none)
+        P = 1; % Batteries in Parallel
+    end
+
+    nodes
+        p = foundation.electrical.electrical; % +
+        n = foundation.electrical.electrical; % -
+    end
+
+    variables
+        iCell = {0,'A'}; % Cell current (positive in)
+        vCell = {0,'V'}; % Cell terminal voltage
+        socCell = {value={1,'1'},priority=priority.high}; % Cell state of charge
+        numCyclesCell = {value={0,'1'},priority=priority.high}; % Cell discharge cycles
+        vParallelAssembly = {value={0,'V'},priority=priority.none}; % Parallel Assembly Voltage
+        socParallelAssembly = {value={1,'1'},priority=priority.none}; % Parallel Assembly state of charge
+    end
+
+    equations
+        assert(length(iCell) == P);
+        assert(length(vCell) == P);
+        assert(length(socCell) == P);
+        assert(length(numCyclesCell) == P);
+        assert(length(vParallelAssembly) == 1);
+        assert(length(socParallelAssembly) == 1);
+        vParallelAssembly == vCell(1);
+        socParallelAssembly == sum([Cell1.stateOfCharge])/P;
+    end
+
+    annotations
+        [p] : Side=top;
+        [n] : Side=bottom;
+        UILayout = [UIGroup("Main",SOC_vecCell,V0_vecCell,V_rangeCell,R0_vecCell,AHCell,extrapolation_optionCell)];
+        Icon = 'parallelAssembly.svg';
+    end
+
+    for Pidx = 1:P
+        components(ExternalAccess=observe,CompileReuse=true)
+            Cell1(Pidx) = batteryecm.table_battery(SOC_vec = SOC_vecCell,...
+                V0_vec = V0_vecCell,V_range = V_rangeCell,R0_vec = R0_vecCell,AH = AHCell,...
+                extrapolation_option = extrapolation_optionCell,...
+                T_dependence = simscape.enum.tablebattery.temperature_dependence.no,...
+                prm_age_OCV = simscape.enum.tablebattery.prm_age_OCV.OCV,...
+                prm_age_capacity = simscape.enum.tablebattery.prm_age.disabled,...
+                prm_age_modeling = simscape.enum.tablebattery.prm_age_modeling.equation,...
+                prm_age_resistance = simscape.enum.tablebattery.prm_age.disabled,...
+                prm_dir = simscape.enum.tablebattery.prm_dir.noCurrentDirectionality,prm_dyn = simscape.enum.tablebattery.prm_dyn.off,...
+                prm_fade = simscape.enum.tablebattery.prm_fade.disabled,...
+                prm_leak = simscape.enum.tablebattery.prm_leak.disabled,...
+                thermal_port = simscape.enum.thermaleffects.omit,i.priority = priority.none,v.priority = priority.none,...
+                stateOfCharge.priority = priority.none,num_cycles.priority = priority.none);
+        end
+    end
+
+    for Pidx = 1:P
+        connections
+            connect(p,Cell1(Pidx).p);
+            connect(Cell1(Pidx).n,n);
+        end
+    end
+
+    for Pidx = 1:P
+        equations
+            Cell1(Pidx).i == iCell(Pidx);
+            Cell1(Pidx).v == vCell(Pidx);
+            Cell1(Pidx).stateOfCharge == socCell(Pidx);
+            Cell1(Pidx).num_cycles == numCyclesCell(Pidx);
+        end
+    end
+end

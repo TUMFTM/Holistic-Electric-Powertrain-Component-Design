@@ -1,0 +1,41 @@
+{
+
+"BMS_state": 0,
+"BTMS_simulation": 2,
+
+"simulation_simscape": 1,
+"simulation_cell_grouping": "Lumped",
+"simulation_charge_dynamics": "rc3",
+"simulation_SOC_start": 1.00,
+"simulation_SOC_deviation": 0,
+"simulation_timestep" :1,
+
+"simulation_reiter": 0,
+"simulation_parameter_deviation": 0,
+
+"num_higher_p_mod": 0,
+"num_higher_p_sys": 10,
+
+"R_loss_connectionresistance":0.001,
+
+"manufacturer_parameterization": 0,
+"manufacturer": "Panasonic",
+"cellname": "ID3_cell",
+
+"U_mod_nom": 48,
+
+"I_sys_max": 250,
+"U_sys_nom": 400,
+"C_sys_min": 20,
+"E_sys_min": 58,
+
+"m_sys_max": 2000,
+
+"dim_x_sys_max": 3,
+"dim_y_sys_max": 2.3,
+"dim_z_sys_max": 0.5,
+
+"simulationstop_SOC": 0.2,
+
+"overcurrentfactor_racemode": 1
+}
