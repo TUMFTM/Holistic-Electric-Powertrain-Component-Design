@@ -32,7 +32,7 @@ There are several other contributors who worked on different modules of the tool
 3. Place the tool folder in your preferred working directory
 
 ## Usage
-The simulation is controlled through the main script `Sim_v2.m`. Detailed documentation can be found in the Quick Guide.
+The simulation is controlled through the main script `Sim_v2.m`.
 
 ## Sources
 The tool is documented in the following scientific publication:
