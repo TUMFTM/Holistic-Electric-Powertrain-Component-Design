@@ -37,4 +37,4 @@ The simulation is controlled through the main script `Sim_v2.m`.
 ## Sources
 The tool is documented in the following scientific publication:
 
-Rosenberger, N.; Deininger, S.; Koloch, J.; Lienkamp, M. Holistic Electric Powertrain Component Design for Battery Electric Vehicles in an early Development Phase. World Electr. Veh. J. 2024, 1, 0. https://doi.org/
+Rosenberger, N.; Deininger, S.; Koloch, J.; Lienkamp, M. Holistic Electric Powertrain Component Design for Battery Electric Vehicles in an early Development Phase. World Electr. Veh. J. 2024, 1, 0. https://doi.org/10.3390/wevj16020061
