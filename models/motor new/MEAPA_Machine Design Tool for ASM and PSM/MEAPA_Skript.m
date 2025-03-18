@@ -1,367 +1,382 @@
 % -------------------------------------------------------------------------
-% TU Munich - Institute for Automotive Technology (FTM)
+% TU Muenchen - Lehrstuhl fuer Fahrzeugtechnik (FTM)
 % -------------------------------------------------------------------------
-% Model for the design and analysis of a PMSM or ASM (MEAPA)
+% Modell fuer den Entwurf und die Analyse einer PMSM oder ASM (MEAPA)
+% -------------------------------------------------------------------------
+% Autor: Svenja Kalt (kalt@ftm.mw.tum.de)
+%        Jonathan Erhard
 % -------------------------------------------------------------------------
 
-% -------------------------------------------------------------------------
-
-% Notes on using this script:
-% (1) The input parameters can be freely defined, e.g., rated can be passed 
-%     to the script, in which case the rated part below must be commented out. 
-%     However, it is not mandatory to pass anything.
-% (2) If the script is used without the main file, ensure the paths are set correctly.
-% (3) Since no user interface for selecting the winding is invoked,
-%     only the classic design can be performed (no user interaction required).
+% Hinweise zur Verwendung dieses Skripts:
+% (1) Die Eingangsparameter koennen beliebig festgelegt werden, z.B. kann
+%     rated dem Skript uebergeben werden, entsprechend muss der rated-Teil
+%     unten auskommentiert werden. Es muss allerdings nicht zwingend etwas
+%     uebergeben werden.
+% (2) Wird das Skript ohne die Main-Datei benutzt, muss darauf geachtet 
+%     werden, dass die Pfade korrekt gesetzt werden.
+% (3) Da keine Benutzeroberflaeche zur Auswahl der Wicklung aufgerufen
+%     wird, kann nur der klassische Entwurf durchgefuehrt werden (keine
+%     Benutzerinteraktion notwendig)
 
 function [Entwurf, Analyse] = MEAPA_Skript(rated)
 
-%% Select machine type
+%% Maschinentyp auswaehlen
 opt.Maschinentyp = rated.Maschinentyp;                                 % 'ASM', 'PMSM'
 
-%% Input parameters for design
+%% Eingabeparameter Entwurf
 if(strcmp(opt.Maschinentyp,'ASM'))
-    %% RATED VALUES ASM
-    % % Rated power P_N [W]
+    %% BEMESSUNGSWERTE ASM
+    % % Nennleistung P_N [W]
     % rated.P_N   = 150000;
     % 
-    % % Rated speed n_N [rpm]
+    % % Nenndrehzahl n_N [U/min]
     % rated.n_N   = 4300;
     % 
-    % % Rated voltage U_N [V]
+    % % Nennspannung U_N [V]
     % rated.U_N   = 400;
     % 
-    % % Number of pole pairs p [-]
+    % % Polpaarzahl p [-]
     % rated.p     = 8;
     % 
-    % % Rated frequency f_N [-]
+    % % Nennfrequenz f_N [-]
     % rated.f_N   = (rated.p * rated.n_N) / 60;
     % 
-    % % Number of phases m [-]
+    % % Strangzahl m [-]
     % rated.m     = 3;
 
-    %% OPTIONS ASM
-    % Machine type
-    opt.Maschinenausfuehrung            = 'Kaefiglaeufer';                 % 'Squirrel cage rotor'
+    %% OPTIONEN ASM
+    % Maschinenausfuehrung
+    opt.Maschinenausfuehrung            = 'Kaefiglaeufer';                 % 'Kaefiglaeufer'
     
-    % Connection
-    opt.Schaltung                       = 'Star';                          % 'Star', 'Delta'
+    % Schaltung
+    opt.Schaltung                       = 'Stern';                       % 'Stern', 'Dreieck'
     
-    % Stator winding form
-    opt.Spulenform_Stator               = 'Round wire';                    % 'Round wire'
+    % Spulenform Stator
+    opt.Spulenform_Stator               = 'Runddraht';                     % 'Runddraht'
     
-    % Rotor winding form
-    opt.Spulenform_Rotor                = 'Round wire';                    % 'Round wire'
+    % Spulenform Rotor
+    opt.Spulenform_Rotor                = 'Runddraht';                     % 'Runddraht'
     
-    % Stator slot shape
-    opt.Nutform_Stator                  = 'Trapezoidal (angular)';         % 'Trapezoidal (angular)'
+    % Nutform Stator
+    opt.Nutform_Stator                  = 'Trapezform (eckig)';            % 'Trapezform (eckig)'
     
-    % Rotor slot shape
-    opt.Nutform_Rotor                   = 'Trapezoidal (angular)';         % 'Trapezoidal (angular)'
+    % Nutform Rotor
+    opt.Nutform_Rotor                   = 'Trapezform (eckig)';            % 'Trapezform (eckig)'
     
-    % Stator cooling
-    opt.Kuehlungsart                    = 'Surface cooling';               % 'Surface cooling', 'Internal or circulation cooling'
+    % Kuehlung Stator
+    opt.Kuehlungsart                    = 'Oberflaechenkuehlung';          % 'Oberflaechenkuehlung', 'Innen- oder Kreislaufkuehlung'
     
-    % Stator iron material
+    % Eisenmaterial Stator
     opt.Stator_Eisenmaterial.String     = 'VACOFLUX 50';                   % 'M250-35A', 'M800-50A', 'VACOFLUX 48', 'VACOFLUX 50'
     opt.Stator_Eisenmaterial = loadMaterial(opt.Stator_Eisenmaterial,'Elektroblech');
     
-    % Stator conductor material
-    opt.Stator_Leitermaterial.String    = 'Copper';                        % 'Aluminum wire', 'Aluminum casting', 'Copper'
+    % Leitermaterial Stator
+    opt.Stator_Leitermaterial.String    = 'Kupfer';                        % 'Aluminiumdraht', 'Aluminiumguss', 'Kupfer'
     opt.Stator_Leitermaterial = loadMaterial(opt.Stator_Leitermaterial,'Leiter');
     
-    % Temperature of stator conductor material [°C]
+    % Temperatur Leitermaterial Stator [°C]
     opt.theta_1                         = 90;
     
-    % Rotor iron material
+    % Eisenmaterial Rotor
     opt.Rotor_Eisenmaterial.String      = 'VACOFLUX 50';                   % 'M250-35A', 'M800-50A', 'VACOFLUX 48', 'VACOFLUX 50'
     opt.Rotor_Eisenmaterial = loadMaterial(opt.Stator_Eisenmaterial,'Elektroblech');
     
-    % Rotor conductor material
-    opt.Rotor_Leitermaterial.String     = 'Aluminum casting';              % 'Aluminum wire', 'Aluminum casting', 'Copper'
+    % Leitermaterial Rotor
+    opt.Rotor_Leitermaterial.String     = 'Aluminiumguss';                 % 'Aluminiumdraht', 'Aluminiumguss', 'Kupfer'
     opt.Rotor_Leitermaterial = loadMaterial(opt.Rotor_Leitermaterial,'Leiter');
     
-    % Temperature of rotor conductor material [°C]
+    % Temperatur Leitermaterial Rotor [°C]
     opt.theta_2                         = 115;
     
-    % Winding design mode
-    opt.Mode_Wicklung                   = 'Classic';                       % 'Classic'
+    % Modus Wicklungsauslegung
+    opt.Mode_Wicklung                   = 'Klassisch';                     % 'Klassisch'
     
-    % Winding optimization goal
+    % Optimierungsziel Wicklung
     opt.Wicklungstyp                    = 'B';                             % 'A','B','C'
 
-    %% REFERENCE VALUES ASM
-    % Reference value for the relative armature length lambda [-]
-    % Source: [Mueller08, p.577 - Table 9.1.3], [Meyer18, p.117]
-    richt.lambda = 2.5;                                                   % between 0.6 and 1.0 for p=1, between 1.0 and 4.0 for p>1
+    %% RICHTWERTE ASM
+    % Richtwert fuer die relative Ankerlaenge lambda [-]
+    % Quelle: [Mueller08, S.577 - Tabelle 9.1.3], [Meyer18, S.117]
+    richt.lambda = 2.5;                                                   % zwischen 0.6 und 1.0 fuer p=1, zwischen 1.0 und 4.0 fuer p>1
 
-    % Reference value for the channel width of ventilation channels l_v [m]
-    % Source: [Meyer09, p.41], [Mueller08, p.585]
-    richt.l_v = 0.01;                                                      % between 0.006 and 0.01
+    % Richtwert fuer die Kanalbreite der Ventilationskanaele l_v [m]
+    % Quelle: [Meyer09, S.41], [Mueller08, S.585]
+    richt.l_v = 0.01;                                                      % zwischen 0.006 und 0.01
 
-    % Reference value for the mean value of the air gap induction B_m [T]
-    % Source: [Mueller08, p.582 - Table 9.1.5]
-    richt.B_m = 0.58;                                                      % between 0.4 and 0.65
+    % Richtwert fuer den Mittelwert der Luftspaltinduktion B_m [T]
+    % Quelle: [Mueller08, S.582 - Tabelle 9.1.5]
+    richt.B_m = 0.58;                                                      % zwischen 0.4 und 0.65
 
-    % Reference value for current density (Stator) S_1 [A/mm^2]
-    % Source: [Mueller08, p.580 - Table 9.1.4]
-    richt.S_1 = 7.0;                                                       % between 3.0 and 8.0
+    % Richtwert fuer den Strombelag A [A/mm]
+    % Quelle: [Mueller08, S.580 - Tabelle 9.1.4]
+    % ACHTUNG: entweder B_m oder A angeben
+    %richt.A = 50.0;                                                       % zwischen 20.0 und 120.0
 
-    % Reference value for max. allowable induction in the stator back B_1r_max [T]
-    % Source: [Mueller08, p.582 - Table 9.1.5]
-    richt.B_1r_max = 1.4;                                                  % between 1.3 and 1.65
+    % Richtwert fuer die Stromdichte (Stator) S_1 [A/mm^2]
+    % Quelle: [Mueller08, S.580 - Tabelle 9.1.4]
+    richt.S_1 = 7.0;                                                       % zwischen 3.0 und 8.0
 
-    % Reference value for max. allowable induction in the stator teeth B_1z_max [T]
-    % Source: [Mueller08, p.582 - Table 9.1.5]
-    richt.B_1z_max = 1.8;                                                  % between 1.4 and 2.1
+    % Richtwert fuer die max. zulaessige Induktion im Ruecken (Stator) B_1r_max [T]
+    % Quelle: [Mueller08, S.582 - Tabelle 9.1.5]
+    richt.B_1r_max = 1.4;                                                  % zwischen 1.3 und 1.65
 
-    % Reference value for the stator slot fill factor phi_1n [-]
-    % Source: [Mueller08, p.586 - Table 9.1.6]
-    richt.phi_1n = 0.5;                                                    % between 0.3 and 0.5 for round wire, between 0.35 and 0.6 for form coil or bar
+    % Richtwert fuer die max. zulaessige Induktion in den Zaehnen (Stator) B_1z_max [T]
+    % Quelle: [Mueller08, S.582 - Tabelle 9.1.5]
+    richt.B_1z_max = 1.8;                                                 % zwischen 1.4 und 2.1
 
-    % Reference value for the winding factor (Stator) xi_1p [-]
-    % Source: [Mueller08, p.596]
-    richt.xi_1p = 0.96;                                                    % between 0.92 and 0.96
+    % Richtwert fuer den Nutfuellfaktor (Stator) phi_1n [-]
+    % Quelle: [Mueller08, S.586 - Tabelle 9.1.6]
+    % V/A: Niederspannung
+    richt.phi_1n = 0.5;                                                    % zwischen 0.3 und 0.5 fuer Runddraht, zwischen 0.35 und 0.6 fuer Formspule- oder Stab
 
-    % Reference value for the minimum slot pitch (Stator) tau_1n_min [m]
-    % Source: [Meyer09, p.46], [Pyr14]
-    richt.tau_1n_min = 0.007;                                              % between 0.007 and 0.07
+    % Richtwert fuer den Wicklungsfaktor (Stator) xi_1p [-]
+    % Quelle: [Mueller08, S.596]
+    % V/A: keine Unterscheidung zwischen Einschicht- und Zweischichtwicklung,
+    % da lediglich fuer initiale Abschaetzung benoetigt (wird im weiteren
+    % Entwurfsverlauf genau berechnet)
+    richt.xi_1p = 0.96;                                                    % zwischen 0.92 und 0.96
 
-    % Reference value for the iron fill factor (Stator) phi_1Fe [-]
-    % Source: [Mueller08, p.599]
-    richt.phi_1Fe = 0.95;                                                  % between 0.9 and 1.0
+    % Richtwert fuer die minimale Nutteilung (Stator) tau_1n_min [m]
+    % Quelle: [Meyer09, S.46], [Pyr14]
+    richt.tau_1n_min = 0.007;                                              % zwischen 0.007 und 0.07
 
-    % Reference value for the rotor current density S_2 [A/mm^2]
-    % Source: [Mueller08, p.580 - Table 9.1.4]
-    richt.S_2 = 5.0;   
+    % Richtwert fuer den Eisenfuellfaktor (Stator) phi_1Fe [-]
+    % Quelle: [Mueller08, S.599]
+    richt.phi_1Fe = 0.95;                                                  % zwischen 0.9 und 1.0
 
-    % Reference value for the bar current density (Rotor) S_2s [A/mm^2]
-    % Source: [Mueller08, p.580 - Table 9.1.4]
-    richt.S_2s = 4.0;                                                      % between 3.0 and 8.0 for copper, between 3.0 and 6.5 for aluminum casting, between 3.0 and 6.5 for aluminum wire
+    % Richtwert fuer die Stromdichte (Rotor) S_2 [A/mm^2]
+    % Quelle: [Mueller08, S.580 - Tabelle 9.1.4]
+    richt.S_2 = 5.0;                                                       % zwischen 3.0 und 8.0 fuer Kupfer, zwischen 3.0 und 6.5 fuer Aluminiumguss, zwischen 3.0 und 6.5 fuer Aluminiumdraht
 
-    % Reference value for the ring current density (Rotor) S_2r [A/mm^2]
-    % Source: [Mueller08, p.580 - Table 9.1.4]
-    richt.S_2r = 5.0;                                                      % between 3.0 and 8.0 for copper, between 3.0 and 6.5 for aluminum casting, between 3.0 and 6.5 for aluminum wire
+    % Richtwert fuer die Stabstromdichte (Rotor) S_2s [A/mm^2]
+    % Quelle: [Mueller08, S.580 - Tabelle 9.1.4]
+    richt.S_2s = 4.0;                                                      % zwischen 3.0 und 8.0 fuer Kupfer, zwischen 3.0 und 6.5 fuer Aluminiumguss, zwischen 3.0 und 6.5 fuer Aluminiumdraht
 
-    % Reference value for the max. allowable induction in the rotor back B_2r_max [T]
-    % Source: [Mueller08, p.582 - Table 9.1.5]
-    richt.B_2r_max = 1.5;                                                  % between 0.4 and 1.6
+    % Richtwert fuer die Ringstromdichte (Rotor) S_2r [A/mm^2]
+    % Quelle: [Mueller08, S.580 - Tabelle 9.1.4]
+    richt.S_2r = 5.0;                                                      % zwischen 3.0 und 8.0 fuer Kupfer, zwischen 3.0 und 6.5 fuer Aluminiumguss, zwischen 3.0 und 6.5 fuer Aluminiumdraht
 
-    % Reference value for the max. allowable induction in the rotor teeth B_2z_max [T]
-    % Source: [Mueller08, p.582 - Table 9.1.5]
-    richt.B_2z_max = 1.9;                                                  % between 1.5 and 2.2
+    % Richtwert fuer die max. zulaessige Induktion im Ruecken (Rotor) B_2r_max [T]
+    % Quelle: [Mueller08, S.582 - Tabelle 9.1.5]
+    richt.B_2r_max = 1.5;                                                  % zwischen 0.4 und 1.6
 
-    % Reference value for the slot fill factor (Rotor) phi_2n [-]
-    % Source: [Mueller08, p.586 - Table 9.1.6]
-    % Note: Low voltage
-    richt.phi_2n = 0.5;                                                    % between 0.3 and 0.5 for round wire, between 0.35 and 0.6 for form coil or bar
+    % Richtwert fuer die max. zulaessige Induktion in den Zaehnen (Rotor) B_2z_max [T]
+    % Quelle: [Mueller08, S.582 - Tabelle 9.1.5]
+    richt.B_2z_max = 1.9;                                                  % zwischen 1.5 und 2.2
 
-    % Reference value for the winding factor (Rotor) xi_2p [-]
-    % Source: [Mueller08, p.596]
-    % Note: No distinction between single-layer and double-layer windings,
-    % as it is only required for initial estimation (calculated precisely during further design process)
-    richt.xi_2p = 0.96;                                                    % between 0.92 and 0.96
+    % Richtwert fuer den Nutfuellfaktor (Rotor) phi_2n [-]
+    % Quelle: [Mueller08, S.586 - Tabelle 9.1.6]
+    % V/A: Niederspannung
+    richt.phi_2n = 0.5;                                                    % zwischen 0.3 und 0.5 fuer Runddraht, zwischen 0.35 und 0.6 fuer Formspule- oder Stab
 
-    % Reference value for the minimum slot pitch (Rotor) tau_2n_min [m]
-    % Source: [Meyer09, p.46], [Pyr14]
-    richt.tau_2n_min = 0.007;                                              % between 0.007 and 0.07
+    % Richtwert fuer den Wicklungsfaktor (Rotor) xi_2p [-]
+    % Quelle: [Mueller08, S.596]
+    % V/A: keine Unterscheidung zwischen Einschicht- und Zweischichtwicklung,
+    % da lediglich fuer initiale Abschaetzung benoetigt (wird im weiteren
+    % Entwurfsverlauf genau berechnet)
+    richt.xi_2p = 0.96;                                                    % zwischen 0.92 und 0.96
 
-    % Reference value for the iron fill factor (Rotor) phi_2Fe [-]
-    % Source: [Mueller08, p.599]
-    richt.phi_2Fe = 0.95;                                                  % between 0.9 and 1.0
+    % Richtwert fuer die minimale Nutteilung (Rotor) tau_2n_min [m]
+    % Quelle: [Meyer09, S.46], [Pyr14]
+    richt.tau_2n_min = 0.007;                                              % zwischen 0.007 und 0.07
+
+    % Richtwert fuer den Eisenfuellfaktor (Rotor) phi_2Fe [-]
+    % Quelle: [Mueller08, S.599]
+    richt.phi_2Fe = 0.95;                                                  % zwischen 0.9 und 1.0
 
 elseif(strcmp(opt.Maschinentyp,'PMSM'))
-    %% RATED VALUES PMSM
-    % % Rated power P_N [W]
+    %% BEMESSUNGSWERTE PMSM
+    % % Nennleistung P_N [W]
     % rated.P_N           = 115000;
     % 
-    % % Rated speed n_N [rpm]
+    % % Nenndrehzahl n_N [U/min]
     % rated.n_N           = 4300;
     % 
-    % % Rated voltage U_N [V]
+    % % Nennspannung U_N [V]
     % rated.U_N           = 400;
     % 
-    % % Number of pole pairs p [-]
+    % % Polpaarzahl p [-]
     % rated.p             = 8;
     % 
-    % % Rated frequency f_N [-]
+    % % Nennfrequenz f_N [-]
     % rated.f_N           = (rated.p * rated.n_N) / 60;
     % 
-    % % Power factor cos_phi_N [-]
+    % % Leistungsfaktor cos_phi_N [-]
     rated.cos_phi_N     = 0.9;
     % 
-    % % Number of phases m [-]
+    % % Strangzahl m [-]
     % rated.m             = 3;
 
-    %% OPTIONS PMSM
-    % Machine type
-    opt.Maschinenausfuehrung            = 'SPMSM';                         % 'SPMSM', 'IPMSM (embedded)', 'IPMSM (tangential)', 'IPMSM (V-shape)';
+    %% OPTIONEN PMSM
+    % Maschinenausfuehrung
+    opt.Maschinenausfuehrung            = 'SPMSM';                         % 'SPMSM', 'IPMSM (eingelassen)', 'IPMSM (tangential)', 'IPMSM (V-Form)';
     
-    % Connection type
-    opt.Schaltung                       = 'Star';                          % 'Star', 'Delta'
+    % Schaltung
+    opt.Schaltung                       = 'Stern';                         % 'Stern', 'Dreieck'
     
-    % Stator winding form
-    opt.Spulenform_Stator               = 'Round wire';                    % 'Round wire'
+    % Spulenform Stator
+    opt.Spulenform_Stator               = 'Runddraht';                     % 'Runddraht'
     
-    % Stator slot shape
-    opt.Nutform_Stator                  = 'Trapezoidal (angular)';         % 'Trapezoidal (angular)'
+    % Nutform Stator
+    opt.Nutform_Stator                  = 'Trapezform (eckig)';            % 'Trapezform (eckig)'
     
-    % Stator cooling
-    opt.Kuehlungsart                    = 'Water (direct)';                % 'Air (indirect)', 'Water (direct)'
+    % Kuehlung Stator
+    opt.Kuehlungsart                    = 'Wasser (direkt)';               % 'Luft (indirekt)', 'Wasser (direkt)'
     
-    % Stator iron material
+    % Eisenmaterial Stator
     opt.Stator_Eisenmaterial.String     = 'VACOFLUX 50';                   % 'M250-35A', 'M800-50A', 'VACOFLUX 48', 'VACOFLUX 50'
     opt.Stator_Eisenmaterial = loadMaterial(opt.Stator_Eisenmaterial,'Elektroblech');
     
-    % Stator conductor material
-    opt.Stator_Leitermaterial.String    = 'Copper';                        % 'Aluminum wire', 'Aluminum casting', 'Copper'
+    % Leitermaterial Stator
+    opt.Stator_Leitermaterial.String    = 'Kupfer';                        % 'Aluminiumdraht', 'Aluminiumguss', 'Kupfer'
     opt.Stator_Leitermaterial = loadMaterial(opt.Stator_Leitermaterial,'Leiter');
     
-    % Temperature of stator conductor material [°C]
+    % Temperatur Leitermaterial Stator [°C]
     opt.theta_1                         = 90;
     
-    % Rotor iron material
+    % Eisenmaterial Rotor
     opt.Rotor_Eisenmaterial.String      = 'VACOFLUX 50';                   % 'M250-35A', 'M800-50A', 'VACOFLUX 48', 'VACOFLUX 50'
     opt.Rotor_Eisenmaterial = loadMaterial(opt.Stator_Eisenmaterial,'Elektroblech');
     
-    % Rotor magnet material
+    % Magnetmaterial Rotor
     opt.Rotor_Magnetmaterial.String     = 'VACODYM 238 TP';                % 'VACODYM 238 TP', 'VACODYM 225 TP'
     opt.Rotor_Magnetmaterial = loadMaterial(opt.Rotor_Magnetmaterial,'Magnet');
     
-    % Winding design mode
-    opt.Mode_Wicklung                   = 'Classic';                       % 'Classic'
+    % Modus Wicklungsauslegung
+    opt.Mode_Wicklung                   = 'Klassisch';                     % 'Klassisch'
     
-    % Winding optimization goal
+    % Optimierungsziel Wicklung
     opt.Wicklungstyp                    = 'B';                             % 'A','B','C'
 
-    %% REFERENCE VALUES PMSM
-    % Reference value for the relative armature length lambda [-]
-    % Source: [Mueller08, p.577 - Table 9.1.3], [Meyer18, p.117]
-    richt.lambda = 2.5;                                                    % between 0.6 and 1.0 for p=1, between 1.0 and 4.0 for p>1
+    %% RICHTWERTE PMSM
+    % Richtwert fuer die relative Ankerlaenge lambda [-]
+    % Quelle: [Mueller08, S.577 - Tabelle 9.1.3], [Meyer18, S.117]
+    richt.lambda = 2.5;                                                    % zwischen 0.6 und 1.0 fuer p=1, zwischen 1.0 und 4.0 fuer p>1
 
-    % Reference value for the channel width of ventilation channels l_v [m]
-    % Source: [Meyer09, p.41], [Mueller08, p.585]
-    richt.l_v = 0.01;                                                      % between 0.006 and 0.01
+    % Richtwert fuer die Kanalbreite der Ventilationskanaele l_v [m]
+    % Quelle: [Meyer09, S.41], [Mueller08, S.585]
+    richt.l_v = 0.01;                                                      % zwischen 0.006 und 0.01
 
-    % Reference value for the amplitude of air-gap induction B_p [T]
-    % Source: [Mueller08, p.582 - Table 9.1.5]
-    richt.B_p = 0.85;                                                      % between 0.75 and 1.05
+    % Richtwert fuer die Amplitude der Luftspaltinduktion B_p [T]
+    % Quelle: [Mueller08, S.582 - Tabelle 9.1.5]
+    richt.B_p = 0.85;                                                      % zwischen 0.75 und 1.05
 
-    % Reference value for the current loading A [A/mm]
-    % Source: [Mueller08, p.580 - Table 9.1.4]
-    % NOTE: Either B_p or A must be specified
-    %richt.A = 50.0;                                                       % between 30.0 and 120.0 for air (indirect), between 160.0 and 300.0 for water (direct)
+    % Richtwert fuer den Strombelag A [A/mm]
+    % Quelle: [Mueller08, S.580 - Tabelle 9.1.4]
+    % ACHTUNG: entweder B_p oder A angeben
+    %richt.A = 50.0;                                                       % zwischen 30.0 und 120.0 fuer Luft (indirekt), zwischen 160.0 und 300.0 fuer Wasser (direkt)
 
-    % Reference value for the current density (Stator) S_1 [A/mm^2]
-    % Source: [Mueller08, p.580 - Table 9.1.4]
-    richt.S_1 = 7.0;                                                       % between 3.0 and 7.0 for air (indirect), between 13.0 and 18.0 for water (direct)
+    % Richtwert fuer die Stromdichte (Stator) S_1 [A/mm^2]
+    % Quelle: [Mueller08, S.580 - Tabelle 9.1.4]
+    richt.S_1 = 7.0;                                                       % zwischen 3.0 und 7.0 fuer Luft (indirekt), zwischen 13.0 und 18.0 fuer Wasser (direkt)
 
-    % Reference value for the max. allowable induction in the stator back B_1r_max [T]
-    % Source: [Mueller08, p.582 - Table 9.1.5]
-    richt.B_1r_max = 1.4;                                                  % between 1.0 and 1.5
+    % Richtwert fuer die max. zulaessige Induktion im Ruecken (Stator) B_1r_max [T]
+    % Quelle: [Mueller08, S.582 - Tabelle 9.1.5]
+    richt.B_1r_max = 1.4;                                                  % zwischen 1.0 und 1.5
 
-    % Reference value for the max. allowable induction in the stator teeth B_1z_max [T]
-    % Source: [Mueller08, p.582 - Table 9.1.5]
-    richt.B_1z_max = 1.8;                                                  % between 1.6 and 2.0
+    % Richtwert fuer die max. zulaessige Induktion in den Zaehnen (Stator) B_1z_max [T]
+    % Quelle: [Mueller08, S.582 - Tabelle 9.1.5]
+    richt.B_1z_max = 1.8;                                                  % zwischen 1.6 und 2.0
 
-    % Reference value for the stator slot fill factor phi_1n [-]
-    % Source: [Mueller08, p.586 - Table 9.1.6]
-    % Note: Low voltage
-    richt.phi_1n = 0.5;                                                    % between 0.3 and 0.5 for round wire, between 0.35 and 0.6 for form coil or bar
+    % Richtwert fuer den Nutfuellfaktor (Stator) phi_1n [-]
+    % Quelle: [Mueller08, S.586 - Tabelle 9.1.6]
+    % V/A: Niederspannung
+    richt.phi_1n = 0.5;                                                    % zwischen 0.3 und 0.5 fuer Runddraht, zwischen 0.35 und 0.6 fuer Formspule- oder Stab
 
-    % Reference value for the winding factor (Stator) xi_1p [-]
-    % Source: [Mueller08, p.596]
-    % Note: No distinction between single-layer and double-layer windings,
-    % as it is only required for initial estimation (calculated precisely during further design process)
-    richt.xi_1p = 0.96;                                                    % between 0.92 and 0.96
+    % Richtwert fuer den Wicklungsfaktor (Stator) xi_1p [-]
+    % Quelle: [Mueller08, S.596]
+    % V/A: keine Unterscheidung zwischen Einschicht- und Zweischichtwicklung,
+    % da lediglich fuer initiale Abschaetzung benoetigt (wird im weiteren
+    % Entwurfsverlauf genau berechnet)
+    richt.xi_1p = 0.96;                                                    % zwischen 0.92 und 0.96
 
-    % Reference value for the minimum slot pitch (Stator) tau_1n_min [m]
-    % Source: [Meyer09, p.46], [Pyr14]
-    richt.tau_1n_min = 0.007;                                              % between 0.007 and 0.07
+    % Richtwert fuer die minimale Nutteilung (Stator) tau_1n_min [m]
+    % Quelle: [Meyer09, S.46], [Pyr14]
+    richt.tau_1n_min = 0.007;                                              % zwischen 0.007 und 0.07
 
-    % Reference value for the iron fill factor (Stator) phi_1Fe [-]
-    % Source: [Mueller08, p.599]
-    richt.phi_1Fe = 0.95;                                                  % between 0.9 and 1.0
+    % Richtwert fuer den Eisenfuellfaktor (Stator) phi_1Fe [-]
+    % Quelle: [Mueller08, S.599]
+    richt.phi_1Fe = 0.95;                                                  % zwischen 0.9 und 1.0
 
-    % Reference value for the max. allowable induction in the rotor back B_2r_max [T]
-    % Source: [Mueller08, p.582 - Table 9.1.5]
-    richt.B_2r_max = 1.4;                                                  % between 1.0 and 1.5
+    % Richtwert fuer die max. zulaessige Induktion im Ruecken (Rotor) B_2r_max [T]
+    % Quelle: [Mueller08, S.582 - Tabelle 9.1.5]
+    richt.B_2r_max = 1.4;                                                  % zwischen 1.0 und 1.5
 
-    % Reference value for the iron fill factor (Rotor) phi_2Fe [-]
-    % Source: [Mueller08, p.599]
-    richt.phi_2Fe = 0.95;                                                  % between 0.9 and 1.0
+    % Richtwert fuer den Eisenfuellfaktor (Rotor) phi_2Fe [-]
+    % Quelle: [Mueller08, S.599]
+    richt.phi_2Fe = 0.95;                                                  % zwischen 0.9 und 1.0
 else
-    error('Invalid input for variable "opt.Maschinentyp"');
+    error('Ungueltige Eingabe bei Variable "opt.Maschinentyp"');
 end
 
-%% Reassign variables
+%% Umspeichern
 handles.rated = rated;
 handles.richt = richt;
 handles.opt = opt;
 clear rated richt opt
 
-%% Start design
+%% Entwurf starten
 if(strcmp(handles.opt.Maschinentyp,'ASM'))
     [handles.Entwurf] = Entwurf_ASM(handles);
 elseif(strcmp(handles.opt.Maschinentyp,'PMSM'))
     [handles.Entwurf] = Entwurf_PMSM(handles);
 else
-    error('Invalid input for variable "Entwurf.Optionen.Maschinentyp"');
+    error('Ungueltige Eingabe bei Variable "Entwurf.Optionen.Maschinentyp"');
 end
-disp('Design completed');
+disp('Entwurf abgeschlossen');
 
-%% Input parameters for analysis
-    %% OPTIONS FOR LOSSES
-    % Winding losses
+%% Eingabeparameter Analyse
+    %% OPTIONEN VERLUSTE
+    % Wicklungsverluste
     handles.opt.P_vw = 1;                                                  % 0, 1
     
-    % Magnetic reversal losses
+    % Ummagnetisierungsverluste
     handles.opt.P_vu = 1;                                                  % 0, 1
     
-    % Iron loss model
-    handles.opt.P_vu_Modell = 'Model approach Jordan';                     % '1'
+    % Eisenverlustmodell
+    handles.opt.P_vu_Modell = 'Modellansatz Jordan';                                         % '1'
     
-    % Mechanical losses
+    % mechanische Verluste
     handles.opt.P_vme = 0;                                                 % 0, 1
     
-    % Additional losses
+    % Zusatzverluste
     handles.opt.P_vzus = 1;                                                % 0, 1
 
-    %% OPTIONS FOR CALCULATION
-    % Generator operation
+    %% OPTIONEN BERECHNUNG
+    % Generatorbereich
     handles.opt.Generator = 1;                                             % 0, 1
     
-    % Max. speed [rpm]
+    % max. Drehzahl [U/min]
     handles.opt.n_max = 14000;
     
-    % Speed resolution
+    % Aufloesung Drehzahl
     handles.opt.n_tics = 60;
     
-    % Torque resolution
+    % Aufloesung Drehmoment
     handles.opt.M_tics = 60;
     
-    % Maximum voltage control [V]
+    % Ansteuerung max. Spannung [V]
     handles.opt.u_1max = handles.Entwurf.EMAG.U_1Str * sqrt(2);
     
-    % Maximum current control [A]
+    % Ansteuerung max. Strom [A]
     handles.opt.i_1max = handles.Entwurf.EMAG.I_1Str * sqrt(2);
 
-%% Start analysis
+%% Analyse starten
 if(strcmp(handles.Entwurf.Optionen.Maschinentyp,'ASM'))
     [handles.Analyse] = Analyse_ASM(handles);
 elseif(strcmp(handles.Entwurf.Optionen.Maschinentyp,'PMSM'))
     [handles.Analyse] = Analyse_PMSM(handles);
 else
-    error('Invalid input for variable "handles.Entwurf.Optionen.Maschinentyp"');
+    error('Ungueltige Eingabe bei Variable "handles.Entwurf.Optionen.Maschinentyp"');
 end
-disp('Analysis completed');
+disp('Analyse abgeschlossen');
 
 Entwurf = handles.Entwurf;
 Analyse = handles.Analyse;
 assignin('base','Analyse',Analyse);
 end
 
-%% Additional function
+%% Zusatzfunktion
 % Load material
 function data = loadMaterial(var,typ)
 
@@ -372,7 +387,7 @@ function data = loadMaterial(var,typ)
     switch typ
         case 'Elektroblech'
             filepath = '5_Materialien/1_Elektroblech/';
-        case 'Conductor'
+        case 'Leiter'
             filepath = '5_Materialien/2_Leiter/';
         case 'Magnet'
             filepath = '5_Materialien/3_Magnet/';

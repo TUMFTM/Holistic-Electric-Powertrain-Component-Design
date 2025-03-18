@@ -1,0 +1,42 @@
+function display_performance_attributes(simOut)
+    time2 = simOut.sim_out.time.Data;
+    velocity2 = simOut.sim_out.velocity.Data .* 3.6;
+    index = find(velocity2 > 100, 1);
+    acceleration_time = time2(index);
+ %   disp(['The vehicle acceleration time to 100km/h is: ', num2str(acceleration_time), ' seconds']);
+ %   disp(['The maximum (peak) vehicle speed is: ', num2str(velocity(end)), ' km/h']);
+    
+
+    %save('time')
+    %save('velocity')
+    load('time.mat')
+    load('velocity.mat')
+    figure
+    % Define TUM colors
+    tum_blue = [0, 101, 189] / 255;         % TUM Blue
+    tum_dark_blue = [0, 79, 158] / 255;     % TUM Dark Blue
+    tum_grey = [162, 162, 162] / 255;       % TUM Grey
+    
+    if true%true% Plot acceleration cycle
+        figure('Name', 'Acceleration Cycle', 'Position', [100, 100, 1400, 700]);
+        performance = plot(time, velocity, '-', 'Color', tum_dark_blue, 'LineWidth', 2.5, 'DisplayName', 'Velocity Power Configuration');
+        
+        hold on;
+        plot(time, velocity2, '--', 'Color', tum_blue, 'LineWidth', 2.5, 'DisplayName', 'Velocity Torque Configuration');
+        plot(time, (velocity + velocity2) / 2, '-.', 'Color', tum_grey, 'LineWidth', 2.5, 'DisplayName', 'Velocity (Average)');
+    
+       % Update legend to include all plots
+        legend('Location', 'best', 'FontSize', 16);
+    
+        % Improve labels, title, and legend
+        xlabel('Time in s', 'FontSize', 20, 'FontWeight', 'bold');
+        ylabel('Velocity km/h', 'FontSize', 20, 'FontWeight', 'bold');
+        title('Acceleration Cycle Plot', 'FontSize', 22, 'FontWeight', 'bold');
+        grid on;
+        
+        % Ensure axis font sizes update correctly
+        set(gca, 'FontSize', 24, 'FontWeight', 'bold', 'GridColor', tum_grey);
+    end
+
+
+end

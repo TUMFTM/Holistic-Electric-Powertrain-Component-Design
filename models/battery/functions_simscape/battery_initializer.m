@@ -38,18 +38,17 @@ h.n_RC = config.simulation_charge_dynamics(3); % get RC-model from config
 % get from config oder battery_GD
 
 %% load cellparameters
-
+%config.cellname = 'ID3_cell';
 if config.manufacturer_parameterization == 0
     % OCV
-    load(pathes.bat.Celldata+"/"+config.cellname+"/pOCV.mat");
+    load(fullfile(pathes.bat.Celldata, config.cellname, "pOCV.mat"));
     if pOCV.SOC_vec(end) > 1
-    pOCV.SOC_vec = pOCV.SOC_vec'/100;
+        pOCV.SOC_vec = pOCV.SOC_vec' / 100;
     end
     
     % xRC
-    x_RC = load(pathes.bat.Celldata+"/"+config.cellname+"/"+h.n_RC+"RC/"+h.n_RC+"RC.mat");
-    x_RC =  x_RC.("results_" + h.n_RC + "RC");
-    
+    x_RC = load(fullfile(pathes.bat.Celldata, config.cellname, h.n_RC + "RC", h.n_RC + "RC.mat"));
+    x_RC = x_RC.("results_" + h.n_RC + "RC");
     %R_loss - For Preliminary loss calculation
     % try
     %     R_loss = load(pathes.bat.Celldata+"/"+config.cellname+"/0RC/0RC.mat");
@@ -259,13 +258,28 @@ end
 clear d_ch
 %% save Initialization
 ch = d.ch;
-save(pathes.bat.Batterymodel+"/+"+config.libraryname+"/"+config.libraryname+"_param_ch.mat","-struct","ch") % save Charge Initilaization
-
 dch = d.dch;
-save(pathes.bat.Batterymodel+"/+"+config.libraryname+"/"+config.libraryname+"_param_dch.mat","-struct","dch") % save Discharge Initilaization
+
+% Define the directory (keeping the `+`)
+modelDir = fullfile(pathes.bat.Batterymodel, config.libraryname);
+
+% Delete old files but KEEP the directory
+if isfolder(modelDir)
+    disp(['Clearing old files in directory: ', modelDir])
+    delete(fullfile(modelDir, '*_param_*.mat')); % Deletes only old .mat files
+else
+    % Create directory if it doesn't exist
+    mkdir(modelDir);
+    disp(['Created directory: ', modelDir]);
+end
+
+% Save initialization files
+save(fullfile(modelDir, config.libraryname+"_param_ch.mat"), "-struct", "ch")
+save(fullfile(modelDir, config.libraryname+"_param_dch.mat"), "-struct", "dch")
 
 disp("battery_initializer: Successfully saved Simscape Library initialization")
 clear ch dch
+
 
 %% Other Preperations for the simualtion
 % Surface for natural heat convection (worst case apporach excluding "_BTMS")

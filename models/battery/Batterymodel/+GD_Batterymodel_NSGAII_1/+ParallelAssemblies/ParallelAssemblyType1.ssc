@@ -2,11 +2,11 @@ component ParallelAssemblyType1
     % ParallelAssemblyType1:2
     % Parallel Assembly Block
     %    Model resolution: Lumped
-    %    Number of cells: 3
+    %    Number of cells: 1
     %
-    %    MATLAB version: 9.14
-    %    Simscape Battery version: 1.1
-    %    Simscape code generated on: 19-Dec-2024 14:18:13
+    %    MATLAB version: 23.2
+    %    Simscape Battery version: 23.2
+    %    Simscape code generated on: 14-Mar-2025 12:44:38
 
     parameters
         SOC_vecCell = {[0, .1, .25, .5, .75, .9, 1],'1'}; % Vector of state-of-charge values, SOC
@@ -30,7 +30,7 @@ component ParallelAssemblyType1
     end
 
     parameters(ExternalAccess=none)
-        P = 3; % Batteries in Parallel
+        P = 1; % Batteries in Parallel
     end
 
     inputs
@@ -40,8 +40,8 @@ component ParallelAssemblyType1
     nodes
         p = foundation.electrical.electrical; % +
         n = foundation.electrical.electrical; % -
-        ClntH = foundation.thermal.thermal; % CH
-        AmbH = foundation.thermal.thermal; % AH
+        ClntH = foundation.thermal.thermal; % ClntH
+        AmbH = foundation.thermal.thermal; % AmbH
     end
 
     variables
@@ -66,7 +66,7 @@ component ParallelAssemblyType1
         assert(length(temperatureCell) == 1);
         assert(length(vParallelAssembly) == 1);
         assert(length(socParallelAssembly) == 1);
-        vParallelAssembly == vCell;
+        vParallelAssembly == Cell1(1).p.v - Cell1(1).n.v;
         socParallelAssembly == Cell1.stateOfCharge;
         Cell1.i == iCell;
         Cell1.v == vCell;

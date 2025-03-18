@@ -13,7 +13,12 @@ subsys = [model '/Variant Subsystem Battery/Battery Global Drive/Battery'];
 
 % Block names
 ProbeBlockName = [subsys '/Pack1/ModuleAssembly1/LossProbe'];
-BoundBlockName = [subsys '/Pack1/ModuleAssembly1/Module01'];
+if battery_GD.SysInfo.num_serial_mods_sys < 11
+     BoundBlockName = [subsys '/Pack1/ModuleAssembly1/Module1'];
+ else
+     BoundBlockName = [subsys '/Pack1/ModuleAssembly1/Module01'];
+ end
+%BoundBlockName = [subsys '/Pack1/ModuleAssembly1/Module01'];
 SinkBlockName = [subsys '/Pack1/ModuleAssembly1/sink_bat_loss_out'];
 SumBlockName = [subsys '/Pack1/ModuleAssembly1/Sum_Losses'];
 GainBlockName = [subsys '/Pack1/ModuleAssembly1/Scale_TotalLoss'];

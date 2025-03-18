@@ -1,0 +1,86 @@
+function [battery_GD, SysSpec] = automaticPackDesignInput(battery_GD, SysSpec)
+    % automaticPackDesignInput
+    % Creates a GUI to accept user inputs for pack design parameters.
+    %
+    % Inputs:
+    %   battery_GD: Struct containing the current battery data.
+    %
+    % Outputs:
+    %   battery_GD: Updated battery structure after pack design.
+    %   SysSpec: Updated system specifications.
+
+    % Extract SysSpec for convenience
+    SysSpec = battery_GD.SysSpec;
+
+    % Step 1: Create a GUI for user inputs
+    inputFig = figure('Name', 'Automatic Pack Design Inputs', 'NumberTitle', 'off', ...
+                      'Position', [500, 300, 400, 500], 'MenuBar', 'none', 'ToolBar', 'none');
+
+    % Input fields with labels and editable boxes
+    uicontrol(inputFig, 'Style', 'text', 'Position', [50, 450, 150, 25], ...
+              'String', 'U_sys_nom (V):', 'HorizontalAlignment', 'right');
+    uicontrol(inputFig, 'Style', 'edit', 'Position', [210, 450, 120, 25], ...
+              'String', num2str(SysSpec.U_sys_nom), ...
+              'Callback', @(src, ~) updateSysSpec('U_sys_nom', src.String));
+
+    uicontrol(inputFig, 'Style', 'text', 'Position', [50, 400, 150, 25], ...
+              'String', 'I_sys_max (A):', 'HorizontalAlignment', 'right');
+    uicontrol(inputFig, 'Style', 'edit', 'Position', [210, 400, 120, 25], ...
+              'String', num2str(SysSpec.I_sys_max), ...
+              'Callback', @(src, ~) updateSysSpec('I_sys_max', src.String));
+
+    uicontrol(inputFig, 'Style', 'text', 'Position', [50, 350, 150, 25], ...
+              'String', 'C_sys_min (Ah):', 'HorizontalAlignment', 'right');
+    uicontrol(inputFig, 'Style', 'edit', 'Position', [210, 350, 120, 25], ...
+              'String', num2str(SysSpec.C_sys_min), ...
+              'Callback', @(src, ~) updateSysSpec('C_sys_min', src.String));
+
+    uicontrol(inputFig, 'Style', 'text', 'Position', [50, 300, 150, 25], ...
+              'String', 'm_sys_max (kg):', 'HorizontalAlignment', 'right');
+    uicontrol(inputFig, 'Style', 'edit', 'Position', [210, 300, 120, 25], ...
+              'String', num2str(SysSpec.m_sys_max), ...
+              'Callback', @(src, ~) updateSysSpec('m_sys_max', src.String));
+
+    uicontrol(inputFig, 'Style', 'text', 'Position', [50, 250, 150, 25], ...
+              'String', 'dim_x_sys_max (m):', 'HorizontalAlignment', 'right');
+    uicontrol(inputFig, 'Style', 'edit', 'Position', [210, 250, 120, 25], ...
+              'String', num2str(SysSpec.dim_x_sys_max), ...
+              'Callback', @(src, ~) updateSysSpec('dim_x_sys_max', src.String));
+
+    uicontrol(inputFig, 'Style', 'text', 'Position', [50, 200, 150, 25], ...
+              'String', 'dim_y_sys_max (m):', 'HorizontalAlignment', 'right');
+    uicontrol(inputFig, 'Style', 'edit', 'Position', [210, 200, 120, 25], ...
+              'String', num2str(SysSpec.dim_y_sys_max), ...
+              'Callback', @(src, ~) updateSysSpec('dim_y_sys_max', src.String));
+
+    uicontrol(inputFig, 'Style', 'text', 'Position', [50, 150, 150, 25], ...
+              'String', 'dim_z_sys_max (m):', 'HorizontalAlignment', 'right');
+    uicontrol(inputFig, 'Style', 'edit', 'Position', [210, 150, 120, 25], ...
+              'String', num2str(SysSpec.dim_z_sys_max), ...
+              'Callback', @(src, ~) updateSysSpec('dim_z_sys_max', src.String));
+
+    uicontrol(inputFig, 'Style', 'text', 'Position', [50, 100, 150, 25], ...
+              'String', 'E_sys_min (kWh):', 'HorizontalAlignment', 'right');
+    uicontrol(inputFig, 'Style', 'edit', 'Position', [210, 100, 120, 25], ...
+              'String', num2str(SysSpec.E_sys_min), ...
+              'Callback', @(src, ~) updateSysSpec('E_sys_min', src.String));
+
+    % Proceed button to finalize inputs
+    uicontrol(inputFig, 'Style', 'pushbutton', 'Position', [150, 30, 100, 40], ...
+              'String', 'Save', 'Callback', @saveCallback);
+
+    % Block execution until GUI is closed
+    uiwait(inputFig);
+
+    % Nested functions for updating SysSpec and closing the GUI
+    function updateSysSpec(field, value)
+        SysSpec.(field) = str2double(value);
+        battery_GD.SysSpec = SysSpec;
+    end
+
+    function saveCallback(~, ~)
+        % Resume execution and close the GUI
+        uiresume(inputFig);
+        delete(inputFig);
+    end
+end

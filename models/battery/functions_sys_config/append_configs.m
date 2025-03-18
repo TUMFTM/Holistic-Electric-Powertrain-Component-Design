@@ -6,6 +6,7 @@ persistent first_run_pass
 % Check if first run in this simulation. If first run write at first array
 % position, otherwise append data to already existing data.
 
+
 switch nargin
     case 2
         if isempty(first_run_fail) 
@@ -38,5 +39,24 @@ switch nargin
     otherwise
         error('Wrong number of input arguments!')
 end
+
+%if size(configs, 2) == 1 % Check if the structure has more than 1 row
+%    
+%    if isempty(configs.SysSpec)
+%        index = 1;
+%    end
+%end 
+if isstruct(configs) && numel(configs) == 1
+    % Initialize the index to 1 if `mod_ID` exists and is NaN
+    if isfield(configs, 'mod_ID') && isnan(configs.mod_ID)
+        index = 1;
+    elseif isfield(configs, 'sys_ID') && isnan(configs.sys_ID)
+        % Initialize the index to 1 if `sys_ID` exists and is NaN
+        index = 1;
+    else
+        % Otherwise, set the index to the next available position
+        index = size(configs, 2) + 1;
+    end
+end  
 
 configs(index) = config_append;

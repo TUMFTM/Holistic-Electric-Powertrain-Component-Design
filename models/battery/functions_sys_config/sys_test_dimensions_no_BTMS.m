@@ -33,7 +33,6 @@ sf_mass_sys = 1 + config_bat.SysSpec.sf_mass_sys;    % Safety factor for module 
 %% Calculate system mass and dimensions
 
 % We always assume the same orientation of the modules inside the system.
-
 mass_sys = mass_mod * tot * sf_mass_sys;
 
 dim_x_sys = dim_x_mod * s * sf_dim_sys;       

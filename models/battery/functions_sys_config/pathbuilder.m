@@ -8,6 +8,6 @@ function path = pathbuilder(path, prefix, suffix)
 
     names = fieldnames(path);
     for i = 1: size(names,1)
-       path.(string(names(i))) = prefix + path.(string(names(i))) + suffix;
+       path.(string(names(i))) = fullfile(prefix , path.(string(names(i))) , suffix);
     end
 end

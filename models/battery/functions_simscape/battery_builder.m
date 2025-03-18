@@ -323,6 +323,7 @@ if scriptchecker == 1
 
 end
 
+
 %% Generate Simscape Battery library model
 
 % Create new folder if its missing
@@ -344,14 +345,14 @@ if ~numel(dir(pathes.bat.Batterymodel))<=2
     delete(pathes.bat.Batterymodel + "\*")
 end
 
-% generate new battery pack model
-%buildBattery(batteryPack,LibraryName = libraryname,Directory = pathes.bat.Batterymodel);
 
-% build with masked parameters
-buildBattery(batteryPack,LibraryName = config.libraryname,Directory = pathes.bat.Batterymodel,...
-    MaskInitialTargets = "VariableNames", MaskParameters = "VariableNames");
 
-% buildBattery(batteryPack,LibraryName = config.libraryname,Directory = pathes.bat.Batterymodel);
+% Generate new battery pack model with masked parameters
+buildBattery(batteryPack, ...
+    LibraryName = config.libraryname, ...
+    Directory = pathes.bat.Batterymodel, ...
+    MaskInitialTargets = "VariableNames", ...
+    MaskParameters = "VariableNames");
 
 disp("battery_builder: Successfully generated new Simulink library")
 

@@ -2,12 +2,12 @@ component ModuleType1
     % ModuleType1:2
     % Module Block
     %    Model resolution: Lumped
-    %    Number of parallel assemblies: 10
-    %    Number of cells per parallel assembly: 3
+    %    Number of parallel assemblies: 18
+    %    Number of cells per parallel assembly: 1
     %
-    %    MATLAB version: 9.14
-    %    Simscape Battery version: 1.1
-    %    Simscape code generated on: 19-Dec-2024 14:18:18
+    %    MATLAB version: 23.2
+    %    Simscape Battery version: 23.2
+    %    Simscape code generated on: 14-Mar-2025 12:44:42
 
     parameters
         SOC_vecCell = {[0, .1, .25, .5, .75, .9, 1],'1'}; % Vector of state-of-charge values, SOC
@@ -31,8 +31,8 @@ component ModuleType1
     end
 
     parameters(ExternalAccess=none)
-        P = 3; % Batteries in Parallel
-        S = 10; % Batteries in Series
+        P = 1; % Batteries in Parallel
+        S = 18; % Batteries in Series
     end
 
     inputs
@@ -42,8 +42,8 @@ component ModuleType1
     nodes
         p = foundation.electrical.electrical; % +
         n = foundation.electrical.electrical; % -
-        ClntH = foundation.thermal.thermal; % CH
-        AmbH = foundation.thermal.thermal; % AH
+        ClntH = foundation.thermal.thermal; % ClntH
+        AmbH = foundation.thermal.thermal; % AmbH
     end
 
     variables
@@ -52,8 +52,8 @@ component ModuleType1
         socCell = {value={1,'1'},priority=priority.high}; % Cell state of charge
         numCyclesCell = {value={0,'1'},priority=priority.high}; % Cell discharge cycles
         temperatureCell = {value={298.15,'K'},priority=priority.high}; % Cell temperature
-        vParallelAssembly = {value={repmat(0,10,1),'V'},priority=priority.none}; % Parallel Assembly Voltage
-        socParallelAssembly = {value={repmat(1,10,1),'1'},priority=priority.none}; % Parallel Assembly state of charge
+        vParallelAssembly = {value={repmat(0,18,1),'V'},priority=priority.none}; % Parallel Assembly Voltage
+        socParallelAssembly = {value={repmat(1,18,1),'1'},priority=priority.none}; % Parallel Assembly state of charge
     end
 
     intermediates
@@ -68,7 +68,7 @@ component ModuleType1
         assert(length(temperatureCell) == 1);
         assert(length(vParallelAssembly) == S);
         assert(length(socParallelAssembly) == S);
-        vParallelAssembly(1) == vCell;
+        vParallelAssembly(1) == Cell1(1).p.v - Cell1(1).n.v;
         socParallelAssembly(1) == Cell1.stateOfCharge;
         Cell1.i == iCell;
         Cell1.v == vCell;
@@ -136,10 +136,10 @@ component ModuleType1
         Icon = 'module.svg';
     end
 
-    for CellIdx = 2:S
+    for ParallelAssemblyIdx = 2:S
         equations
-            vParallelAssembly(1) == vParallelAssembly(CellIdx);
-            socParallelAssembly(1) == socParallelAssembly(CellIdx);
+            vParallelAssembly(1) == vParallelAssembly(ParallelAssemblyIdx);
+            socParallelAssembly(1) == socParallelAssembly(ParallelAssemblyIdx);
         end
     end
 end

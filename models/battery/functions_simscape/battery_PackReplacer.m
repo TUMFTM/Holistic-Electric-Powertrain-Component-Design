@@ -112,12 +112,12 @@ ParallelChannels.PortHandle = get_param(ParallelChannels.Name,"PortHandles");
 UnitDelay.LineHandle = get_param(UnitDelay.Name,"LineHandles");
 UnitDelay.PortHandle = get_param(UnitDelay.Name,"PortHandles");
 %
-
-% if battery_GD.SysInfo.num_serial_mods_sys < 11
-%     BoundBlockName = [model '/Pack1/ModuleAssembly1/Module1'];
-% else
-%     BoundBlockName = [model '/Pack1/ModuleAssembly1/Module01'];
-% end
+battery_GD = evalin('base', 'battery_GD');
+if battery_GD.SysInfo.num_serial_mods_sys < 11
+     BoundBlockName = [model '/Pack1/ModuleAssembly1/Module1'];
+ else
+     BoundBlockName = [model '/Pack1/ModuleAssembly1/Module01'];
+ end
 % SinkBlockName = [model '/Pack1/ModuleAssembly1/sink_bat_loss_out'];
 % SysDepthName = [model '/Pack1'];
 % SinkBlockPostion = [165   140   255   170]; 

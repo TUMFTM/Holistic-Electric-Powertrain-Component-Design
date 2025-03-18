@@ -1,4 +1,5 @@
 <?xml-stylesheet href="defaultstyles.css" type="text/css"?>
+<?xml-stylesheet href="physmodIcon.css" type="text/css"?>
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:d="http://www.mathworks.com/blockgraphics" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="svg_3" width="126" height="126" d:options="PreserveAspect:Off;Rotate:On;Resize:FitToBlock;Port:None">
 	<defs>
 		<style>

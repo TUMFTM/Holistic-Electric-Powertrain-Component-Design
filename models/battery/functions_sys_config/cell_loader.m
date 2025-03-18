@@ -40,9 +40,9 @@ if 1
     if bat_celltype == 1
         dataname = dataname + "_cyl";
         % Thin out for existing cells
-        if ~ismember(cell_idx_choosen, [1, 5, 9])
-            return
-        end
+        %if ~ismember(cell_idx_choosen, [1, 5, 9])
+        %    return
+        %end
     elseif bat_celltype == 2
         dataname = dataname + "_pouch";
     elseif bat_celltype == 3

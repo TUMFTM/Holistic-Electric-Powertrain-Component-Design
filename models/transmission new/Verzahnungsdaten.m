@@ -1,31 +1,31 @@
-% Script for gear data calculations
-% Sources: Niemann, Getriebe allgemein, 2003, S.58 und 276f.
+%Skript für Verzahnungsdaten
+% Quellen: Niemann, Getriebe allgemein, 2003, S.58 und 276f.
 %          FZG, Formelsammlung zum Modul Maschinenelemente, 2020, S.102ff.
-%          Gruss, Berechnungsgrundlagen Stirnradverzahnungen (online verfügbar)
+%          Gruss, Berechnungsgrundlagen Stirnradverzahnungen (online verfügbar) 
 
-alphawt = atand(tand(alpha)/cosd(beta)); % Degrees: Operating pressure angle
-betab = atand(tand(beta)*cosd(alphawt)); % Degrees: Helix angle at the base circle
-mt = mn/cosd(beta); % mm: Transverse module
+    alphawt = atand(tand(alpha)/cosd(beta)); %Grad: Betriebseingriffswinkel
+    betab = atand(tand(beta)*cosd(alphawt)); %Grad: Schrägungswinkel Grundkreis
+    mt = mn/cosd(beta); %mm: Stirnmodul
+    
+    u = z2/z1; %--: Zähneverhältnis; Übersetzung
+    
+    d1 = mt*z1; %mm: Teilkreisdurchmesser Zahnrad 1
+    d2 = mt*z2; %mm: Teilkreisdurchmesser Zahnrad 2
 
-u = z2/z1; % --: Gear ratio; transmission ratio
+    dw1 = d1; %mm: Wälzkreisdurchmesser Z1
+    dw2 = d2; %mm: Wälzkreisdurchmesser Z2
 
-d1 = mt*z1; % mm: Pitch diameter of gear 1
-d2 = mt*z2; % mm: Pitch diameter of gear 2
-
-dw1 = d1; % mm: Rolling diameter of gear 1
-dw2 = d2; % mm: Rolling diameter of gear 2
-
-db1 = d1 * cosd(alphawt); % mm: Base circle diameter of gear 1
-db2 = d2 * cosd(alphawt); % mm: Base circle diameter of gear 2
-
-a = (d1 + d2)/2; % mm: Center distance
-
-haP = mn; % mm: Addendum height
-da1 = d1 + 2*haP; % mm: Tip diameter of gear 1
-da2 = d2 + 2*haP; % mm: Tip diameter of gear 2
-
-galpha = 0.5 * (sqrt(da1^2 - db1^2) + sqrt(da2^2 - db2^2)) - a * sind(alphawt); % mm: Path of contact
-galphaa1 = 0.5 * db1 * (((da1/db1)^2 - 1)^0.5 - tand(alphawt)); % mm: Contact path on pinion tip
-eps_alpha = galpha / (mt * pi * cosd(alphawt)); % Total contact ratio
-eps_1 = galphaa1 / (mt * pi * cosd(alphawt)); % Partial contact ratio (pinion tip)
-eps_2 = eps_alpha - eps_1; % Partial contact ratio (gear tip)
+    db1 = d1 * cosd(alphawt); %mm: Grundkreisdurchmesser Z1
+    db2 = d2 * cosd(alphawt); %mm: Grundkreisdurchmesser Z2
+    
+    a = (d1 +d2)/2; %mm: Achsabstand
+    
+    haP = mn; %mm: Kopfhöhe
+    da1 = d1 + 2*haP; %mm: Kopfkreisdurchmesser Z1
+    da2 = d2 + 2*haP; %mm: Kopfkreisdurchmesser Z2
+    
+    galpha = 0.5* (sqrt(da1^2 - db1^2) + sqrt(da2^2 - db2^2)) - a*sind(alphawt); %mm: Eingriffsstrecke
+    galphaa1 = 0.5*db1 * (((da1/db1)^2 -1)^0.5 - tand(alphawt)); %mm: Eingriffsstrecke Ritzelkopf
+    eps_alpha = galpha / (mt*pi*cosd(alphawt)); %Profilüberdeckung
+    eps_1 = galphaa1 / (mt*pi*cosd(alphawt)); %Teilüberdeckung Ritzelkopf
+    eps_2 = eps_alpha - eps_1; %Teilüberdeckung Radkopf

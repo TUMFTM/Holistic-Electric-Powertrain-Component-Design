@@ -50,7 +50,8 @@ end
 
 
 %% Get cell IDs
-
+%disp(ID_3d)
+%disp(['index: ', num2str(index)]);
 switch orientation
     case 'x'
         IDs_mat = ID_3d(:,:,index);

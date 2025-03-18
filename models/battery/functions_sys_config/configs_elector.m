@@ -1,4 +1,4 @@
-function [battery] = configs_elector(battery,configs_6_BTMS_passed)
+function [battery] = configs_elector(configs_6_BTMS_passed)
 
 %% configs_elector v0.1
 % This function is part of the Global Drive 2023 project
